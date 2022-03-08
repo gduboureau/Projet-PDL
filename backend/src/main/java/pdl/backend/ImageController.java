@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,7 +71,7 @@ public class ImageController {
     }
 
     try {
-      imageDao.create(new Image(file.getOriginalFilename(), file.getBytes()));
+      imageDao.create(new Image(file.getOriginalFilename(),file.getContentType(), file.getBytes()));
     } catch (IOException e) {
       return new ResponseEntity<>("Failure to read file", HttpStatus.NO_CONTENT);
     }
@@ -86,6 +87,8 @@ public class ImageController {
       ObjectNode objectNode = mapper.createObjectNode();
       objectNode.put("id", image.getId());
       objectNode.put("name", image.getName());
+      objectNode.put("size", image.getSize());
+      objectNode.put("type",image.getType());
       nodes.add(objectNode);
     }
     return nodes;
