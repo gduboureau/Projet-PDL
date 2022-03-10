@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { api } from '@/http-api';
-import { ImageType } from '@/image'
-import Image from './Image.vue';
+import { api } from '../http-api';
+import { ImageType } from '../image'
 
 const imageList = ref<ImageType[]>([]);
 
@@ -16,11 +15,12 @@ api.getImageList()
 </script>
 
 <template>
-  <div>
+  <div id="gallery">
     <h3>Gallery</h3>
-    <Image v-for="image in imageList" :id="image.id" />
+    <Image v-for="image in imageList" :key="image" v-bind:src="'images/' + image.id" />
   </div>
 </template>
 
 <style scoped>
+
 </style>

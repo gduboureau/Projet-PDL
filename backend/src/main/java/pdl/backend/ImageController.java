@@ -3,6 +3,7 @@ package pdl.backend;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,13 +39,19 @@ public class ImageController {
   }
 
   @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-  public ResponseEntity<?> getImage(@PathVariable("id") long id) {
+  public ResponseEntity<?> getImage(@PathVariable("id") long id,@RequestParam HashMap<String,String> map) throws IOException {
 
     Optional<Image> image = imageDao.retrieve(id);
 
     if (image.isPresent()) {
-      InputStream inputStream = new ByteArrayInputStream(image.get().getData());
-      return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+      if (map.isEmpty()){
+        InputStream inputStream = new ByteArrayInputStream(image.get().getData());
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+      }else{
+        String AlgoName = map.get("algorithm");
+        String param1 = map.get("p1");
+        return ApplyAlgorithm.ChooseAlgorithm(image, AlgoName, param1);
+      }
     }
     return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
   }

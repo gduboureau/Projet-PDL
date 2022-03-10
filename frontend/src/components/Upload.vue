@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { api } from '@/http-api';
+import { api } from '../http-api';
 
 const target = ref<HTMLInputElement>();
 

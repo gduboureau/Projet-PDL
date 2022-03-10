@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import { api } from '@/http-api';
+import { api } from '../http-api';
 
 const props = defineProps<{ id: number }>()
 
@@ -28,4 +28,5 @@ api.getImage(props.id)
   <figure id="gallery"></figure>  
 </template>
 
-<style></style>
+<style>
+</style>

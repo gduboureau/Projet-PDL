@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import router from "@/router";
-import { api } from '@/http-api';
-import { ImageType } from '@/image'
+import router from "../router";
+import { api } from '../http-api';
+import { ImageType } from '../image'
 
 const selectedId = ref(-1);
 const imageList = ref<ImageType[]>([]);

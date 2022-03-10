@@ -57,4 +57,8 @@ public class Image {
     }
     return "error";
   }
+
+  public void setData(byte[] data){
+    this.data = data;
+  }
 }
