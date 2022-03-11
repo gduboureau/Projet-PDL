@@ -2,7 +2,6 @@ package pdl.backend;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Repository;
 
