@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import boofcv.struct.border.BorderType;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.Planar;
+import boofcv.alg.color.ColorHsv;
 
 public class imageProcessing {
 
@@ -43,10 +44,12 @@ public class imageProcessing {
 	 * 
 	 * @param image : the image
 	 */
-
-	public static void HistogramEqualization(Planar<GrayU8> image) {
+  public static void HistogramEqualization(Planar<GrayU8> image) {
 		boolean isInColor = (image.getNumBands() == 3);
 		int hist[] = new int[256], HistogramCumulative[] = new int[256];
+        for(int i = 0; i<256; i++){
+			hist[i] = 0;
+		}
 		for (int y = 0; y < image.height; ++y) {
 			for (int x = 0; x < image.width; ++x) {
 				if (isInColor) {
@@ -55,7 +58,7 @@ public class imageProcessing {
 					for (int channel = 0; channel < 3; channel++) {
 						rgb[channel] = image.getBand(channel).get(x, y);
 					}
-					rgbToHsv(rgb[0], rgb[1], rgb[2], hsv);
+					ColorHsv.rgbToHsv(rgb[0], rgb[1], rgb[2], hsv);
 					hist[(int) hsv[2]]++;
 				} else {
 					int gl = image.getBand(0).get(x, y);
@@ -73,17 +76,17 @@ public class imageProcessing {
 		for (int y = 0; y < image.height; ++y) {
 			for (int x = 0; x < image.width; ++x) {
 				if (isInColor) {
-					int rgb[] = { 0, 0, 0 };
+					float rgb[] = { 0, 0, 0 };
 					float hsv[] = { 0, 0, 0 };
 					for (int channel = 0; channel < 3; channel++) {
 						rgb[channel] = image.getBand(channel).get(x, y);
 					}
-					rgbToHsv(rgb[0], rgb[1], rgb[2], hsv);
-					hsv[2] = HistogramCumulative[(int) hsv[2]];
-					hsvToRgb(hsv[0], hsv[1], hsv[2], rgb);
+					ColorHsv.rgbToHsv(rgb[0], rgb[1], rgb[2], hsv);
+					hsv[2] = HistogramCumulative[(int) hsv[2]]*255/(image.totalPixels());
+					ColorHsv.hsvToRgb(hsv[0], hsv[1], hsv[2], rgb);
 					for (int channel = 0; channel < 3; channel++) {
-						int k = rgb[channel];
-						image.getBand(channel).set(x, y, (k * 255) / (image.width * image.height));
+						int k = (int)rgb[channel];
+						image.getBand(channel).set(x, y, k);
 					}
 				} else {
 					int k = HistogramCumulative[image.getBand(0).get(x, y)];
