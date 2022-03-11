@@ -41,7 +41,7 @@ public class ImageDao implements Dao<Image> {
       try {
         fileContent = Files.readAllBytes(imgFile);
         Optional<org.springframework.http.MediaType> MediaType = MediaTypeFactory.getMediaType(imgFile.getFileName().toString());
-        Image img = new Image(imgFile.getFileName().toString(),MediaType.get().toString(), fileContent);
+        Image img = new Image(imgFile.getFileName().toString(),MediaType.get(), fileContent);
         images.put(img.getId(), img);
 		  } catch (IOException e) {
         e.printStackTrace();

@@ -12,14 +12,14 @@ public class Image {
   private String name;
   private byte[] data;
   private String size;
-  private String type;
+  private org.springframework.http.MediaType type;
 
-  public Image(final String name,final String type, final byte[] data) {
+  public Image(final String name,final org.springframework.http.MediaType mediaType, final byte[] data) {
     id = count++;
     this.name = name;
     this.data = data;
     size = imageDim();
-    this.type = type;
+    this.type = mediaType;
   }
 
   public long getId() {
@@ -42,7 +42,7 @@ public class Image {
     return data;
   }
 
-  public String getType(){
+  public org.springframework.http.MediaType getType(){
     return type;
   }
 
