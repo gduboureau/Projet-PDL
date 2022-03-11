@@ -1,7 +1,10 @@
 package pdl.backend;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Repository;
@@ -18,16 +22,30 @@ public class ImageDao implements Dao<Image> {
 
   private final Map<Long, Image> images = new HashMap<>();
 
-  public ImageDao() {
-    final ClassPathResource imgFile = new ClassPathResource("test.jpg");
-    byte[] fileContent;
-    try {
-      fileContent = Files.readAllBytes(imgFile.getFile().toPath());
-      Optional<org.springframework.http.MediaType> MediaType = MediaTypeFactory.getMediaType(imgFile.getFilename());
-      Image img = new Image("test.jpg",MediaType.get().toString(), fileContent);
-      images.put(img.getId(), img);
-    } catch (final IOException e) {
-      e.printStackTrace();
+  public ImageDao() throws IOException {
+    File imgDir = new File("src/main/resources/images");
+    if (!imgDir.exists() || !imgDir.isDirectory()){
+      System.err.println("'images' Directory doesn't exist");
+    }else{
+      Path pathDir = imgDir.toPath();
+      Files.walk(pathDir)
+        .filter(Files::isReadable)
+        .filter(Files::isRegularFile)
+        .forEach(imgFile -> loadImage(imgFile));
+    }
+  }
+
+  private void loadImage(Path imgFile){
+    if (FilenameUtils.getExtension(imgFile.getFileName().toString()).equals("jpg") || FilenameUtils.getExtension(imgFile.getFileName().toString()).equals("png")){
+      byte[] fileContent;
+      try {
+        fileContent = Files.readAllBytes(imgFile);
+        Optional<org.springframework.http.MediaType> MediaType = MediaTypeFactory.getMediaType(imgFile.getFileName().toString());
+        Image img = new Image(imgFile.getFileName().toString(),MediaType.get().toString(), fileContent);
+        images.put(img.getId(), img);
+		  } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 
