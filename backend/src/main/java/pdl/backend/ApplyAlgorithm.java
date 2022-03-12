@@ -15,10 +15,43 @@ import boofcv.struct.image.Planar;
 public class ApplyAlgorithm {
 
     public static ResponseEntity<?> ChooseAlgorithm(Optional<Image> img, String algo, String p1) throws NumberFormatException, IOException{
-        int param1 = 0;
+        
+        if (checkAlgoParameters(algo, p1) != null){
+            return checkAlgoParameters(algo, p1);
+        }
+        
+        int param1 = Integer.parseInt(p1);
+        
+        Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
+        Planar<GrayU8> output = image.createSameShape();
+        
+        if(algo.equals("Brightness"))
+            imageProcessing.BrightnessModifier(image, param1);
+        else if (algo.equals("Histogram"))
+            imageProcessing.HistogramEqualization(image);
+        else if (algo.equals("meanFilter"))
+            imageProcessing.meanFilterSimple(image,output,param1);
+        else if (algo.equals("gradientSobel"))
+            imageProcessing.gradientImageSobel(image,output);
+        else if (algo.equals("GrayOutAColorImage"))
+            imageProcessing.GrayOutAColorImage(image,output);
+        else if (algo.equals("ColorFilter"))
+            imageProcessing.ColorFilter(image,output,param1);
+
+        if (algo.equals("meanFilter") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage") || algo.equals("ColorFilter")){
+            img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));
+        }else{
+            img.get().setData(PlanarImageConverter.PlanarImageToBytes(image));
+        }
+        
+        InputStream inputStream = new ByteArrayInputStream(img.get().getData());
+        return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+    }
+
+    public static ResponseEntity<?> checkAlgoParameters(String algo, String p1){
         boolean needParam = true;
         
-        if ((algo.equals("Histogram") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage"))){
+        if (algo.equals("Histogram") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage")){
             needParam = false;
         }else if (algo.equals("Brightness") || algo.equals("ColorFilter") || algo.equals("meanFilter")){
             needParam = true;
@@ -34,48 +67,13 @@ public class ApplyAlgorithm {
         }
         if (needParam){
             try {
-                param1 = Integer.parseInt(p1);
+                Integer.parseInt(p1);
                 }
             catch (Exception e) {
                 return new ResponseEntity<>("parameter is unvalid", HttpStatus.BAD_REQUEST);  
             }
         }
-        
-
-        if(algo.equals("Brightness"))
-            Brightness(img, param1);
-        else if (algo.equals("Histogram"))
-            Histogram(img);
-        else if (algo.equals("meanFilter"))
-            meanFilter(img, param1);
-        else if (algo.equals("gradientSobel"))
-            gradientSobel(img);
-        else if (algo.equals("GrayOutAColorImage"))
-            GrayOutAColorImage(img);
-        else if (algo.equals("ColorFilter"))
-            ColorFilter(img,param1);
-
-        InputStream inputStream = new ByteArrayInputStream(img.get().getData());
-        return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
-    }
-
-    public static void Brightness(Optional<Image> img, int delta) throws IOException{
-        Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
-        imageProcessing.BrightnessModifier(image, delta);
-        img.get().setData(PlanarImageConverter.PlanarImageToBytes(image));
-    }
-
-    public static void Histogram(Optional<Image> img) throws IOException{
-        Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
-        imageProcessing.HistogramEqualization(image);
-        img.get().setData(PlanarImageConverter.PlanarImageToBytes(image));
-    }
-
-    public static void meanFilter(Optional<Image> img,int size) throws IOException{
-        Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
-        Planar<GrayU8> output = image.createSameShape();
-        imageProcessing.meanFilterSimple(image,output,size);
-        img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));
+        return null;
     }
 
     //Comment choisir le kernel ?
@@ -86,26 +84,4 @@ public class ApplyAlgorithm {
         imageProcessing.meanFilterSimple(image,output,size);
         img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));
     }*/
-
-    public static void gradientSobel(Optional<Image> img) throws IOException{
-        Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
-        Planar<GrayU8> output = image.createSameShape();
-        imageProcessing.gradientImageSobel(image,output);
-        img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));
-    }
-
-    public static void GrayOutAColorImage(Optional<Image> img) throws IOException{
-        Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
-        Planar<GrayU8> output = image.createSameShape();
-        imageProcessing.GrayOutAColorImage(image,output);
-        img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));
-    }
-
-    public static void ColorFilter(Optional<Image> img, int hue) throws IOException{
-        Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
-        Planar<GrayU8> output = image.createSameShape();
-        imageProcessing.ColorFilter(image,output,hue);
-        img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));
-    }
-
 }

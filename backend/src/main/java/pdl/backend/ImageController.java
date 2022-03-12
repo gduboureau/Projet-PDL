@@ -51,7 +51,11 @@ public class ImageController {
       }else{
         String AlgoName = map.get("algorithm");
         String param1 = Optional.ofNullable(map.get("p1")).orElse(null);
-        return ApplyAlgorithm.ChooseAlgorithm(image, AlgoName, param1);
+        try{
+          return ApplyAlgorithm.ChooseAlgorithm(image, AlgoName, param1);
+        }catch (Exception e) {
+          return new ResponseEntity<>("Algorithm execution failed for an internal reason", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
       }
     }
     return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
