@@ -5,7 +5,6 @@ import { ImageType } from '../image'
 import Image from './Image.vue';
 
 const imageList = ref<ImageType[]>([]);
-
 api.getImageList()
   .then((data) => {
     imageList.value = data;
@@ -18,7 +17,7 @@ api.getImageList()
 <template>
   <div>
     <h3>Gallery</h3>
-    <Image v-for="image in imageList" :id="image.id" />
+    <Image class="gallery-display" v-for="image in imageList" :id="image.id" :key="image.name"/>
   </div>
 </template>
 

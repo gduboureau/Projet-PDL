@@ -17,26 +17,31 @@ public class ApplyAlgorithm {
     public static ResponseEntity<?> ChooseAlgorithm(Optional<Image> img, String algo, String p1) throws NumberFormatException, IOException{
         
         if (checkAlgoParameters(algo, p1) != null){
+            System.err.println("Cela ne marche pas");
             return checkAlgoParameters(algo, p1);
         }
-        
-        int param1 = Integer.parseInt(p1);
         
         Planar<GrayU8> image = PlanarImageConverter.BytesToPlanarImage(img.get().getData());
         Planar<GrayU8> output = image.createSameShape();
         
-        if(algo.equals("Brightness"))
+        if(algo.equals("Brightness")){
+            int param1 = Integer.parseInt(p1);
             imageProcessing.BrightnessModifier(image, param1);
+        }
         else if (algo.equals("Histogram"))
             imageProcessing.HistogramEqualization(image);
-        else if (algo.equals("meanFilter"))
+        else if (algo.equals("meanFilter")){
+            int param1 = Integer.parseInt(p1);
             imageProcessing.meanFilterSimple(image,output,param1);
+        }
         else if (algo.equals("gradientSobel"))
             imageProcessing.gradientImageSobel(image,output);
         else if (algo.equals("GrayOutAColorImage"))
             imageProcessing.GrayOutAColorImage(image,output);
-        else if (algo.equals("ColorFilter"))
+        else if (algo.equals("ColorFilter")){
+            int param1 = Integer.parseInt(p1);
             imageProcessing.ColorFilter(image,output,param1);
+        }
 
         if (algo.equals("meanFilter") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage") || algo.equals("ColorFilter")){
             img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));

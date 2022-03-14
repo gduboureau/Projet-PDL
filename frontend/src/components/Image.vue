@@ -25,8 +25,22 @@ api.getImage(props.id)
 </script>
 
 <template>
-  <figure id="gallery"></figure>  
+  <figure id="gallery">
+  </figure>  
 </template>
 
 <style>
+
+img{
+  width: 35vw;
+  height: 35vw;;
+}
+
+.gallery-display img{
+  margin: 2%;
+  width: 18vw;
+  height: 18vw;
+  object-fit: cover;
+}
+
 </style>
