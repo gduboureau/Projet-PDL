@@ -1,5 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { ImageType } from '@/image';
+import { Ref } from 'vue';
 
 const instance = axios.create({
   baseURL: "/",
@@ -20,4 +21,5 @@ export const api = {
   getImage: (id: number): Promise<Blob> => requests.get(`images/${id}`, { responseType: "blob" }),
   createImage: (form: FormData): Promise<ImageType> => requests.post('images', form),
   deleteImage: (id: number): Promise<void> => requests.delete(`images/${id}`),
+  getAlgo: (id: number,name: String,param: String): Promise<Blob> => requests.get(`images/${id}?algorithm=${name}${param}`, {responseType: "blob"})
 };

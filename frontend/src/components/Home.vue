@@ -17,8 +17,9 @@ function getImageList() {
 }
 
 function showImage() {
-  router.push({ name: 'image', params: { id: selectedId.value } })
+  router.push({ name: 'algorithm', params: { id: selectedId.value } });
 }
+
 </script>
 
 <template>

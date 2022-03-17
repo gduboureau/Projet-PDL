@@ -17,7 +17,6 @@ public class ApplyAlgorithm {
     public static ResponseEntity<?> ChooseAlgorithm(Optional<Image> img, String algo, String p1) throws NumberFormatException, IOException{
         
         if (checkAlgoParameters(algo, p1) != null){
-            System.err.println("Cela ne marche pas");
             return checkAlgoParameters(algo, p1);
         }
         

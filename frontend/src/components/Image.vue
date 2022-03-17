@@ -25,9 +25,9 @@ api.getImage(props.id)
 </script>
 
 <template>
-  <figure id="gallery">
-  </figure>  
+    <figure id="gallery"></figure>
 </template>
+
 
 <style>
 

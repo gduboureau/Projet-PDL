@@ -18,14 +18,20 @@ const routes: Array<RouteRecordRaw> = [
     path: "/image/:id",
     name: "image",
     component: () => import("./components/Image.vue"),
-    props: ({ params }) => ({ id: Number(params.id) || 0 })
+    props: ({ params }) => ({ id: Number(params.id) || 0 }),
   },
   {
     path: "/upload",
     name: "upload",
     component: () => import("./components/Upload.vue"),
     props: true
-  }
+  },
+  {
+    path: "/algorithm/:id",
+    name: "algorithm",
+    component: () => import("./components/Algorithm.vue"),
+    props: ({ params }) => ({ id: Number(params.id) || 0 })
+  },
 ];
 
 const router = createRouter({
