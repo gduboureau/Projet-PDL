@@ -12,6 +12,7 @@ api.getImage(props.id)
       const galleryElt = document.getElementById("gallery");
       if (galleryElt !== null) {
         const imgElt = document.createElement("img");
+        imgElt.setAttribute("id","display-images");
         galleryElt.appendChild(imgElt);
         if (imgElt !== null && reader.result as string) {
           imgElt.setAttribute("src", (reader.result as string));
@@ -22,16 +23,17 @@ api.getImage(props.id)
   .catch(e => {
     console.log(e.message);
   });
+
 </script>
 
 <template>
-    <figure id="gallery"></figure>
+<figure id="gallery"></figure>
 </template>
 
 
 <style>
 
-img{
+#display-image{
   width: 35vw;
   height: 35vw;;
 }

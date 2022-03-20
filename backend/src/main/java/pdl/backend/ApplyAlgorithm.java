@@ -9,6 +9,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import boofcv.struct.border.BorderType;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.Planar;
 
@@ -31,7 +32,7 @@ public class ApplyAlgorithm {
             imageProcessing.HistogramEqualization(image);
         else if (algo.equals("meanFilter")){
             int param1 = Integer.parseInt(p1);
-            imageProcessing.meanFilterSimple(image,output,param1);
+            imageProcessing.meanFilterWithBorders(image, output, param1, BorderType.NORMALIZED);
         }
         else if (algo.equals("gradientSobel"))
             imageProcessing.gradientImageSobel(image,output);
