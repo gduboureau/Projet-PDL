@@ -103,8 +103,9 @@ function needParam() {
 </template>
 
 <style>
+
 img {
-  width: 18vw;
-  height: 18vw;
+  height: 80vh;
 }
+
 </style>
