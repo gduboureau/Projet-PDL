@@ -47,8 +47,4 @@ api
   outline-offset: -2.3vh;
 }
 
-img {
-  height: 80vh;
-}
-
 </style>

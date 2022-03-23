@@ -28,11 +28,12 @@ function ActiveImg(id: number) {
       popupImg.value = reader.result as string;
     };
   });
-
+  document.body.style.overflow = 'hidden';
   isActive.value = "active";
 }
 
 function Close() {
+  document.body.style.overflow = 'auto';
   isActive.value = "";
   popupImg.value = "";
 }
@@ -63,7 +64,7 @@ function Slide(index: number) {
       <button class="arrow right" v-on:click="Slide(+1)">
         <img src="../assets/next.png" alt="" />
       </button>
-      <div :class="`large-img ${popupImg}`">
+      <div class="large-img">
         <img :src="`${popupImg}`" />
       </div>
     </div>
@@ -82,10 +83,15 @@ function Slide(index: number) {
 </template>
 
 <style scoped>
+
+img {
+  height: 85vh;
+}
+
 .gallery-display {
   display: flex;
   margin-left:75px;
-  margin-top:31px;
+  margin-top:35px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -93,17 +99,6 @@ function Slide(index: number) {
 .popup-img {
   opacity: 0;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: -1;
-  overflow: hidden;
 }
 
 .popup-img.active {
@@ -112,14 +107,14 @@ function Slide(index: number) {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
+  width: 100.1%;
+  height: 100.1%;
   background: rgba(0, 0, 0, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1;
-  overflow: hidden;
+  
 }
 
 .popup-img.active .close,
@@ -130,7 +125,7 @@ function Slide(index: number) {
 }
 
 .close {
-  position: absolute;
+  position:absolute;
   top: 5vh;
   right: 3vw;
   cursor: pointer;
@@ -175,11 +170,12 @@ function Slide(index: number) {
 }
 
 .left {
-  left: 4.5vw;
+  left: 1.8vw;
 }
 
 .large-img {
-  margin-top: 4%;
+  margin-top: 1%;
+  overflow: auto;
 }
 
 </style>
