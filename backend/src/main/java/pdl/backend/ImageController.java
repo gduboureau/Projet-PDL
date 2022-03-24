@@ -104,4 +104,9 @@ public class ImageController {
     return nodes;
   }
 
+  @RequestMapping(value = "/images/algorithms", method = RequestMethod.GET, produces = "application/json")
+  @ResponseBody
+  public ArrayNode getAlgoList() {
+    return ApplyAlgorithm.algorithms();
+  }
 }

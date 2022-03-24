@@ -47,7 +47,7 @@ public class imageProcessing {
   public static void HistogramEqualization(Planar<GrayU8> image) {
 		boolean isInColor = (image.getNumBands() == 3);
 		int hist[] = new int[256], HistogramCumulative[] = new int[256];
-        for(int i = 0; i<256; i++){
+    for(int i = 0; i<256; i++){
 			hist[i] = 0;
 		}
 		for (int y = 0; y < image.height; ++y) {

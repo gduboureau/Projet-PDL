@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps, ref } from "vue";
+import { AlgoTypes } from "../algorithms";
 import { api } from "../http-api";
 import router from "../router";
 import Image from './Image.vue';
@@ -7,7 +8,17 @@ import Image from './Image.vue';
 const param = ref("");
 const props = defineProps<{ id: number }>();
 const selectAlgo = ref("");
+const algoList = ref<AlgoTypes[]>([]);
 
+getAlgoList();
+
+function getAlgoList() {
+  api.getAlgoList().then((data) => {
+    algoList.value = data;
+  }).catch(e => {
+    console.log(e.message);
+  });
+}
 
 async function applyAlgo(prop: number, name: String, parameter: String) :Promise<Blob> {
   return api.getAlgo(prop, name, parameter);
@@ -25,33 +36,38 @@ async function showImageWithAlgo(){
   var select = algo.options[algo.selectedIndex].text;
   if (select == "Brightness" || select == "ColorFilter" || select == "meanFilter"){
     param.value = "&p1=" + input.value;
-    if (input.value != ""){
-      await applyAlgo(props.id, selectAlgo.value, param.value);
-      router.push({ name: 'gallery'});
-    }else{
+    if (input.value == ""){
       alert("Entrer une valeur valide ")
       document.location.reload();
     }
-  }else{
-    await applyAlgo(props.id, selectAlgo.value, param.value);
-    router.push({ name: 'gallery' });
   }
+  const galleryElt = document.getElementById("Form");
+  var newDiv = document.createElement("div");
+  var newContent = document.createTextNode("Transformation de l'image en cours...");
+  newDiv.appendChild(newContent);
+  galleryElt.appendChild(newDiv);
+  await applyAlgo(props.id, selectAlgo.value, param.value);
+  router.push({ name: 'gallery' });
 }
 
 function needParam() {
   const algo = document.getElementById("algolist") as HTMLSelectElement;
   var select = algo.options[algo.selectedIndex].text;
-  if ((select == "Brightness" || select == "ColorFilter" || select == "meanFilter") && document.getElementById("myForm") == null){
-    const galleryElt = document.getElementById("Form");
-    var x = document.createElement("input");
-    if (galleryElt !== null) {
-      x.setAttribute("id", "myForm");
-      x.setAttribute("type", "number");
-      galleryElt.appendChild(x);
+  for (let i = 0; i < algoList.value.length; i++){
+    if (select == algoList.value[i].name && algoList.value[i]["hasParameters"] == true && document.getElementById("myForm") == null){
+      const galleryElt = document.getElementById("Form");
+      var x = document.createElement("input");
+      if (galleryElt !== null) {
+        x.setAttribute("id", "myForm");
+        x.setAttribute("type", "number");
+        galleryElt.appendChild(x);
+        return;
+      }
+    }else{
+      if (document.getElementById("myForm") != null && algoList.value[i]["hasParameters"] == false){
+        document.getElementById("myForm")!.remove();
+      }
     }
-  } else {
-    if (document.getElementById("myForm") != null && select != "Brightness" && select != "ColorFilter" && select != "meanFilter")
-      document.getElementById("myForm")!.remove();
   }
 }
 
@@ -62,12 +78,7 @@ function needParam() {
   <Image class="imgalg" :id="props.id"/>
   <div>
     <select id="algolist" v-model="selectAlgo" @change="needParam">
-      <option id="Brightness">Brightness</option>
-      <option id="Histogram">Histogram</option>
-      <option id="meanFilter">meanFilter</option>
-      <option id="GrayOutAColorImage">GrayOutAColorImage</option>
-      <option id="ColorFilter">ColorFilter</option>
-      <option id="gradientSobel">gradientSobel</option>
+      <option v-for="algo in algoList" :value="algo.name" :key="algo.name">{{ algo.name }}</option>
     </select>
   </div>
   <div>
