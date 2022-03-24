@@ -47,50 +47,29 @@ public class imageProcessing {
   public static void HistogramEqualization(Planar<GrayU8> image) {
 		boolean isInColor = (image.getNumBands() == 3);
 		int hist[] = new int[256], HistogramCumulative[] = new int[256];
-    for(int i = 0; i<256; i++){
-			hist[i] = 0;
-		}
-		for (int y = 0; y < image.height; ++y) {
+    int lut[] = new int[256];
+    for (int y = 0; y < image.height; ++y) {
 			for (int x = 0; x < image.width; ++x) {
-				if (isInColor) {
-					int rgb[] = { 0, 0, 0 };
-					float hsv[] = { 0, 0, 0 };
-					for (int channel = 0; channel < 3; channel++) {
-						rgb[channel] = image.getBand(channel).get(x, y);
-					}
-					ColorHsv.rgbToHsv(rgb[0], rgb[1], rgb[2], hsv);
-					hist[(int) hsv[2]]++;
-				} else {
-					int gl = image.getBand(0).get(x, y);
-					hist[gl]++;
-				}
-			}
-		}
-
+        int rgb[] = new int[3];
+        float hsv[] = new float[3];
+        for(int channel = 0; channel < 3; channel++){
+          rgb[channel] = image.getBand(channel).get(x,y);
+        }
+        rgbToHsv(rgb[0], rgb[1], rgb[2], hsv);
+        hist[(int) hsv[2]] ++;
+      }
+    }
+    int size = image.width * image.height;
 		HistogramCumulative[0] = hist[0];
-
+    lut[0] = (HistogramCumulative[0] * 255 / size > 255) ? 255 : HistogramCumulative[0] * 255 / size;
 		for (int i = 1; i < hist.length; i++) {
 			HistogramCumulative[i] = hist[i] + HistogramCumulative[i - 1];
+      lut[i] = (HistogramCumulative[i] * 255 / size > 255) ? 255 : HistogramCumulative[i] * 255 / size;
 		}
-
 		for (int y = 0; y < image.height; ++y) {
 			for (int x = 0; x < image.width; ++x) {
-				if (isInColor) {
-					float rgb[] = { 0, 0, 0 };
-					float hsv[] = { 0, 0, 0 };
-					for (int channel = 0; channel < 3; channel++) {
-						rgb[channel] = image.getBand(channel).get(x, y);
-					}
-					ColorHsv.rgbToHsv(rgb[0], rgb[1], rgb[2], hsv);
-					hsv[2] = HistogramCumulative[(int) hsv[2]]*255/(image.totalPixels());
-					ColorHsv.hsvToRgb(hsv[0], hsv[1], hsv[2], rgb);
-					for (int channel = 0; channel < 3; channel++) {
-						int k = (int)rgb[channel];
-						image.getBand(channel).set(x, y, k);
-					}
-				} else {
-					int k = HistogramCumulative[image.getBand(0).get(x, y)];
-					image.getBand(0).set(x, y, (k * 255) / (image.width * image.height));
+				for (int channel = 0; channel < 3; channel++) {
+					image.getBand(channel).set(x, y, lut[image.getBand(channel).get(x,y)]);
 				}
 			}
 		}

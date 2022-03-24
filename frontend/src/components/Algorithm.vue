@@ -33,12 +33,18 @@ async function deleteImage() :Promise<void>{
 async function showImageWithAlgo(){
   var input = document.getElementById("myForm") as HTMLInputElement;
   const algo = document.getElementById("algolist") as HTMLSelectElement;
+  if (algo.options[algo.selectedIndex] === undefined) return;
   var select = algo.options[algo.selectedIndex].text;
   if (select == "Brightness" || select == "ColorFilter" || select == "meanFilter"){
     param.value = "&p1=" + input.value;
     if (input.value == ""){
-      alert("Entrer une valeur valide ")
+      alert("Vous devez rentrer une valeur.")
       document.location.reload();
+      return;
+    }else if (select == "ColorFilter" && parseInt(input.value) > 360 || parseInt(input.value) < 0){
+      alert("La valeur de teinte doit être comprise entre 0 et 360.")
+      document.location.reload();
+      return;
     }
   }
   const galleryElt = document.getElementById("Form");
