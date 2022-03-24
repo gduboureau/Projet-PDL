@@ -8,15 +8,26 @@ Duboureau Guillaume
 Loustau Valentin
 Coubard-Lerendu Yoann
 
-## Prérequis 
+## Prérequis et Technologies
 
 Les prérequis devrait déja étre fait sur votre ordinateur au Crémi (vu en TP et dispo sur moodle si besoin).
-Maven
+Java (JDK 11) + JavaScript
 Vue.js : export PATH=/opt/users/Node.js/bin:$PATH
 
 ## Dépendances
 
-BoofCV library
+org.springframework.boot : version 2.6.0
+BoofCV : version 0.39.1
+
+## Compatibilité du serveur
+
+Compatible : Windows 10, Windows 11, Linux, Debian Buster
+Non compatible/non testé : MacOS, Ubuntu 20.04
+
+## Compatibilité du client
+
+Compatible : Google Chrome, Firefox
+Non compatible : Safari
 
 ## Execution 
 
