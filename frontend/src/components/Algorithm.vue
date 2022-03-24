@@ -51,7 +51,7 @@ async function showImageWithAlgo(){
   var newDiv = document.createElement("div");
   var newContent = document.createTextNode("Transformation de l'image en cours...");
   newDiv.appendChild(newContent);
-  galleryElt.appendChild(newDiv);
+  galleryElt!.appendChild(newDiv);
   await applyAlgo(props.id, selectAlgo.value, param.value);
   router.push({ name: 'gallery' });
 }
@@ -60,7 +60,7 @@ function needParam() {
   const algo = document.getElementById("algolist") as HTMLSelectElement;
   var select = algo.options[algo.selectedIndex].text;
   for (let i = 0; i < algoList.value.length; i++){
-    if (select == algoList.value[i].name && algoList.value[i]["hasParameters"] == true && document.getElementById("myForm") == null){
+    if (select == algoList.value[i].name && algoList.value[i].hasParameters == true && document.getElementById("myForm") == null){
       const galleryElt = document.getElementById("Form");
       var x = document.createElement("input");
       if (galleryElt !== null) {
@@ -70,7 +70,7 @@ function needParam() {
         return;
       }
     }else{
-      if (document.getElementById("myForm") != null && algoList.value[i]["hasParameters"] == false){
+      if (document.getElementById("myForm") != null && algoList.value[i].hasParameters == false){
         document.getElementById("myForm")!.remove();
       }
     }
