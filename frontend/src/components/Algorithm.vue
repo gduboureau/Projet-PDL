@@ -2,6 +2,7 @@
 import { defineProps, ref } from "vue";
 import { AlgoTypes } from "../algorithms";
 import { api } from "../http-api";
+import { ImageType } from "../image";
 import router from "../router";
 import Image from './Image.vue';
 
@@ -41,18 +42,20 @@ async function showImageWithAlgo(){
       alert("Vous devez rentrer une valeur.")
       document.location.reload();
       return;
-    }else if (select == "ColorFilter" && parseInt(input.value) > 360 || parseInt(input.value) < 0){
+    }else if (select == "ColorFilter" && (parseInt(input.value) > 360 || parseInt(input.value) < 0)){
       alert("La valeur de teinte doit être comprise entre 0 et 360.")
       document.location.reload();
       return;
+    }else if (select == "meanFilter" && parseInt(input.value) < 0){
+      alert("La valeur de flou doit être supérieure à 0.")
+      document.location.reload();
+      return;
     }
+    document.getElementById("myForm")!.remove();
   }
-  const galleryElt = document.getElementById("Form");
-  var newDiv = document.createElement("div");
-  var newContent = document.createTextNode("Transformation de l'image en cours...");
-  newDiv.appendChild(newContent);
-  galleryElt!.appendChild(newDiv);
+  document!.getElementById("wait")!.hidden = false;
   await applyAlgo(props.id, selectAlgo.value, param.value);
+  document!.getElementById("wait")!.hidden = true;
   router.push({ name: 'gallery' });
 }
 
@@ -70,7 +73,7 @@ function needParam() {
         return;
       }
     }else{
-      if (document.getElementById("myForm") != null && algoList.value[i].hasParameters == false){
+      if (document.getElementById("myForm") != null && algoList.value[i].hasParameters == false && select == algoList.value[i].name){
         document.getElementById("myForm")!.remove();
       }
     }
@@ -83,6 +86,7 @@ function needParam() {
 <div>
   <Image class="imgalg" :id="props.id"/>
   <div>
+    <p id="wait" hidden>Transformation de l'image en cours...</p>
     <select id="algolist" v-model="selectAlgo" @change="needParam">
       <option v-for="algo in algoList" :value="algo.name" :key="algo.name">{{ algo.name }}</option>
     </select>
