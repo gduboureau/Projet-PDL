@@ -69,7 +69,7 @@ Afin de permettre aux groupes d'approfondir un sujet qui les intéresse plus
 particulièrement, on propose la structure suivante.
 
 \begin{description}
-\item[Noyau commun:] Chaque groupe devra réaliser l'implémentation du fonctionnement central de l'application client-serveur. Elle est décrite dans la section~\ref{sec:kernel} et consiste principalement à articuler le contenu développé durant les premières semaines au sein des TP communs.
+\item[Noyau commun:] Chaque groupe devra réaliser l'implémentation du fonctionnement central de l'application client-serveur. Elle est décrite dans la section \verb!2 Noyau commun! et consiste principalement à articuler le contenu développé durant les premières semaines au sein des TP communs.
 
  Le code de cette partie fera l'objet d'un rendu intermédiaire.
   
@@ -103,13 +103,13 @@ couleur enregistrées aux formats suivants :
 }
 {
   Si le dossier \verb!images! n'existe pas depuis l'endroit où a été lancé le
-  serveur, une erreur explicite doit être levée.
+  serveur, aucune image n'apparait, mais le client peut tout de meme upload ses images et utiliser le site.
 }
 {
   \begin{enumerate}
-  \item Lancement de l'exécutable depuis un environnement vide, une erreur doit
-    se déclencher indiquant que le dossier \verb!images! n'est pas présent.
-  \item Mise en place d'un dossier de test contenant au moins 2 niveaux de
+  \item Lancement de l'exécutable depuis un environnement vide possible, dans ce cas, la
+    galerie sera vide.
+  \item Mise en place d'un dossier de test nommé \verb!images! (:backend/src/main/resources) contenant au moins 2 niveaux de
     profondeur dans l'arborescence.
     Le dossier contiendra des documents avec des extensions non-reconnues comme
     étant des images (e.g. \verb!.txt!).
@@ -134,7 +134,7 @@ couleur enregistrées aux formats suivants :
 \besoin{server:processImage}
 {Appliquer un algorithme de traitement d'image}
 {
-  Le serveur contient l'implémentation des algorithmes de traitement d'image proposés à l'utilisateur (voir partie \ref{tai}).
+  Le serveur contient l'implémentation des algorithmes de traitement d'image proposés à l'utilisateur (voir partie \verb!2.4 Traitement d’images!).
 }
 {}
 {}
@@ -164,7 +164,7 @@ le paragraphe "Gestion d'erreurs".\\
 }
 {}
 {
-  Pour le dossier de tests spécifié dans \refBesoin{server:initImages}, la
+  Pour le dossier de tests spécifié dans \verb!Besoin 1!, la
   réponse attendue doit être comparée à la réponse reçue lors de l'exécution de la commande.
 }
 
@@ -173,7 +173,7 @@ le paragraphe "Gestion d'erreurs".\\
 {
   L'envoi d'une requête \verb!POST! à l'adresse \verb!/images! au serveur avec
   des données de type multimedia dans le corps doit ajouter une
-  image à celles stockées sur le serveur (voir \refBesoin{server:manageImages}).
+  image à celles stockées sur le serveur (voir \verb!Besoin 2!).
 }
 {
   \begin{description}
@@ -218,9 +218,9 @@ le paragraphe "Gestion d'erreurs".\\
 {Exécution d'algorithmes par le serveur}
 {
   L'envoi d'une requête \verb!GET! à une adresse de la forme
-  \verb!/images/id?algorithm=X\&p1=Y\&p2=Z! doit permettre de récupérer
-  le résultat de l'exécution de l'algorithme \verb!X! avec les paramètres
-  \verb!p1=Y! et \verb!p2=z!.
+  \verb!/images/id?algorithm=X\&p1=Y! doit permettre de récupérer
+  le résultat de l'exécution de l'algorithme \verb!X! avec le paramètre
+  \verb!p1=Y!.
   Un exemple plus concret d'URL valide est:
   \verb!/images/23?algorithm=increaseLuminosity\&gain=25!
 
@@ -252,7 +252,7 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
 \besoin{client:viewImages}
 {Parcourir les images disponibles sur le serveur}
 {
-  L'utilisateur peut visualiser les images disponibles sur le serveur. La présentation visuelle peut prendre la forme d'un carroussel ou d'une galerie d'images. On suggère que chaque vignette contenant une image soit de taille fixe (relativement à la page affichée). Suivant la taille de l'image initiale la vignette sera complètement remplie en hauteur ou en largeur.
+  L'utilisateur peut visualiser les images disponibles sur le serveur. La présentation visuelle prend la forme d'une galerie d'images, le client peut cliquer sur une image pour l'agrandir et ensuite parcourir la galerie via des flèches. Chaque image à une taille fixe (relativement à la page affichée). Une mise en évidence et un pointeur s'active au survol d'une image.
 }
 {}
 {}
@@ -260,7 +260,7 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
 \besoin{client:selectImage}
 {Sélectionner une image et lui appliquer un effet}
 {
-  L'utilisateur peut cliquer sur la vignette correspondant à une image. L'image est affichée sur la page. L'utilisateur peut visualiser les méta-données de l'image et choisir un des traitements d'image disponibles. Il peut être amené à préciser les paramètres nécessaires au traitement choisi (voir partie \ref{tai}). L'image après traitement sera alors affichée sur la page.
+  L'utilisateur peut selectionner une image via le menu \verb!Home!. L'image est affichée sur la page. L'utilisateur peut choisir un des traitements d'image disponibles. Il peut être amené à préciser les paramètres nécessaires au traitement choisi (voir partie \verb!2.4 Traitement d’images!). L'image après traitement sera alors affichée dans la galerie, le client sera alors redirigé automatiquement sur la page galerie.
 }
 {}
 {}
@@ -269,7 +269,7 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
 \besoin{client:saveImage}
 {Enregistrer une image sur disque}
 {
-  L'utilisateur peut sauvegarder dans son système de fichier l'image chargée, avant ou après lui avoir appliqué un traitement.
+  L'utilisateur peut sauvegarder dans son système de fichier l'image chargée, avant ou après lui avoir appliqué un traitement. En cliquant sur une image dans la galerie puis sur l'icone de téléchargement.
 }
 {}
 {}
@@ -305,7 +305,7 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
 
 \besoin{tai:equalizeHist}
 {Égalisation d'histogramme}
-{L'utilisateur peut appliquer une égalisation d'histogramme à l'image sélectionnée. L'égalisation sera apliquée au choix sur le canal S ou V de l'image représentée dans l'espace HSV.}
+{L'utilisateur peut appliquer une égalisation d'histogramme à l'image sélectionnée. L'égalisation sera apliquée sur le canal V de l'image représentée dans l'espace HSV.}
 {}
 {}
 
@@ -317,7 +317,7 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
 
 \besoin{tai:blur}
 {Filtres de flou}
-{L'utilisateur peut appliquer un flou à l'image sélectionnée. Il peut définir le filtre appliqué (moyen ou gaussien) et choisir le niveau de flou. La convolution est appliquée sur les trois canaux R, G et B.}
+{L'utilisateur peut appliquer un flou à l'image sélectionnée. Il peut choisir entre le filtre moyenneur et gaussien dans la liste des algorithmes. Le filtre moyenneur doit être utilisé avec un paramètre qui correspond au niveau de flou que l'on souhaite (attention plus le niveau est grand plus cela mettra de temps à s'appliquer). En ce qui concerne le filtre gaussien, une valeur par défaut a été défini, il n'y a donc pas de paramètre.}
 {}
 {}
 
@@ -377,9 +377,9 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
   moins les informations suivantes:
   \begin{itemize}
   \item Système(s) d'exploitation sur lesquels votre serveur a été testé, voir
-    \refBesoin{bnf:serverCompatibility}.
+    \verb!Besoin 19!.
   \item Navigateur(s) web sur lesquels votre client a été testé incluant la
-    version de celui-ci, voir \refBesoin{bnf:clientCompatibility}.
+    version de celui-ci, voir \verb!Besoin 20!.
   \end{itemize}
   
 }

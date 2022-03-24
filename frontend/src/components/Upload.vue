@@ -16,6 +16,7 @@ function submitFile() {
         target.value.value = '';
     }).catch(e => {
       console.log(e.message);
+      alert("Error: 415 Unsupported Media Type");
     });
   }
 }
