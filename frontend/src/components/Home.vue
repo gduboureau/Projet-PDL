@@ -3,7 +3,6 @@ import { ref } from "vue";
 import router from "../router";
 import { api } from "../http-api";
 import { ImageType } from "../image";
-import Image from "./Image.vue";
 import { AlgoTypes } from "../algorithms";
 
 const param = ref("");
@@ -41,11 +40,7 @@ function showImage() {
   id.setAttribute("src", "images/" + selectedId.value);
 }
 
-async function applyAlgo(
-  prop: number,
-  name: String,
-  parameter: String
-): Promise<Blob> {
+async function applyAlgo(prop: number,name: String,parameter: String): Promise<Blob> {
   return api.getAlgo(prop, name, parameter);
 }
 
@@ -59,20 +54,13 @@ async function showImageWithAlgo() {
   const algo = document.getElementById("algolist") as HTMLSelectElement;
   if (algo.options[algo.selectedIndex] === undefined) return;
   var select = algo.options[algo.selectedIndex].text;
-  if (
-    select == "Brightness" ||
-    select == "ColorFilter" ||
-    select == "meanFilter"
-  ) {
+  if (select == "Brightness" || select == "ColorFilter" || select == "meanFilter") {
     param.value = "&p1=" + input.value;
     if (input.value == "") {
       alert("Vous devez rentrer une valeur.");
       document.location.reload();
       return;
-    } else if (
-      select == "ColorFilter" &&
-      (parseInt(input.value) > 360 || parseInt(input.value) < 0)
-    ) {
+    } else if (select == "ColorFilter" && (parseInt(input.value) > 360 || parseInt(input.value) < 0)) {
       alert("La valeur de teinte doit être comprise entre 0 et 360.");
       document.location.reload();
       return;
@@ -86,17 +74,14 @@ async function showImageWithAlgo() {
   document!.getElementById("wait")!.hidden = false;
   await applyAlgo(selectedId.value, selectAlgo.value, param.value);
   document!.getElementById("wait")!.hidden = true;
+  document.getElementById("createImage").setAttribute("src","images/"+selectedId.value+"?algorithm="+selectAlgo.value+param.value);
 }
 
 function needParam() {
   const algo = document.getElementById("algolist") as HTMLSelectElement;
   var select = algo.options[algo.selectedIndex].text;
   for (let i = 0; i < algoList.value.length; i++) {
-    if (
-      select == algoList.value[i].name &&
-      algoList.value[i].hasParameters == true &&
-      document.getElementById("myForm") == null
-    ) {
+    if (select == algoList.value[i].name && algoList.value[i].hasParameters == true && document.getElementById("myForm") == null) {
       const galleryElt = document.getElementById("Form");
       var x = document.createElement("input");
       if (galleryElt !== null) {
@@ -106,11 +91,7 @@ function needParam() {
         return;
       }
     } else {
-      if (
-        document.getElementById("myForm") != null &&
-        algoList.value[i].hasParameters == false &&
-        select == algoList.value[i].name
-      ) {
+      if (document.getElementById("myForm") != null && algoList.value[i].hasParameters == false && select == algoList.value[i].name) {
         document.getElementById("myForm")!.remove();
       }
     }
@@ -147,7 +128,7 @@ function needParam() {
 </template>
 
 <style scoped>
-#createImage {
+#createImage{
   float: right;
   height: 80vh;
 }
@@ -155,6 +136,4 @@ function needParam() {
 #home {
   text-align: left;
 }
-
-
 </style>
