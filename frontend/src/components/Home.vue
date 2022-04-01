@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import router from "../router";
 import { api } from "../http-api";
 import { ImageType } from "../image";
 import { AlgoTypes } from "../algorithms";
@@ -8,31 +7,50 @@ import { AlgoTypes } from "../algorithms";
 const param = ref("");
 const selectedId = ref(-1);
 const imageList = ref<ImageType[]>([]);
-getImageList();
 const selectAlgo = ref("");
 const algoList = ref<AlgoTypes[]>([]);
+const target = ref<HTMLInputElement>();
 
+getImageList();
 getAlgoList();
 
-function getAlgoList() {
-  api
-    .getAlgoList()
-    .then((data) => {
-      algoList.value = data;
-    })
-    .catch((e) => {
+function submitFile() {
+  if (target.value !== null && target.value !== undefined && target.value.files !== null) {
+    const file = target.value.files[0];
+    if (file === undefined)
+      return;
+    let formData = new FormData();
+    formData.append("file", file);
+    api.createImage(formData).then(() => {
+      if (target.value !== undefined)
+        target.value.value = '';
+    }).catch(e => {
       console.log(e.message);
+      alert("Error: 415 Unsupported Media Type");
     });
+  }
+  location.reload();
+}
+
+function handleFileUpload(event: Event) {
+  target.value = (event.target as HTMLInputElement);
+}
+
+function getAlgoList() {
+  api.getAlgoList().then((data) => {
+      algoList.value = data;
+  })
+  .catch((e) => {
+    console.log(e.message);
+  });
 }
 function getImageList() {
-  api
-    .getImageList()
-    .then((data) => {
+  api.getImageList().then((data) => {
       imageList.value = data;
-    })
-    .catch((e) => {
-      console.log(e.message);
-    });
+  })
+  .catch((e) => {
+    console.log(e.message);
+  });
 }
 
 function showImage() {
@@ -122,6 +140,12 @@ function needParam() {
       </select>
       <button @click="showImageWithAlgo">apply algo</button>
       <button @click="deleteImage">Delete the image</button>
+    </div>
+    <div>
+      <input type="file" id="file" ref="file" @change="handleFileUpload" />
+    </div>
+    <div>
+      <button @click="submitFile">Submit</button>
     </div>
     <div id="Form"></div>
   </div>
