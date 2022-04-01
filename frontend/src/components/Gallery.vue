@@ -79,7 +79,6 @@ function Slide(index: number) {
       </div>
     </div>
     <div>
-      <h3>Gallery</h3>
       <div class="gallery-display">
         <Image
           v-for="image in imageList"
