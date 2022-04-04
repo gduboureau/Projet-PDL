@@ -7,10 +7,10 @@
     <nav class="menu">
       <ul>
         <li>
-          <router-link to="/">Home</router-link>
+          <router-link class="link" to="/">Home</router-link>
         </li>
         <li >
-          <router-link to="/gallery">Gallery</router-link>
+          <router-link class="link" to="/gallery">Gallery</router-link>
         </li>
       </ul>
     </nav>
@@ -22,71 +22,49 @@
 </template>
 
 <style>
+
 @import url('https://fonts.googleapis.com/css?family=Roboto:500,900,100,300,700,400');
-nav {
-  width: auto;
-  margin: 0 auto;
-  background: rgb(255, 255, 255);
-  padding: 10px;
+
+.menu {
+  margin-top: -15px;
+  margin-bottom: -5px;
 }
 
-nav ul {
-  list-style: none;
-  text-align: center;
+.menu ul {
+  text-align: center; 
 }
-nav ul li {
+
+.menu ul li {
   display: inline-block;
 }
-nav ul li a {
-  display: block;
-  padding: 10px 45px;
+
+.link {
   text-decoration: none;
   color: rgb(0, 0, 0);
   font-weight: 800;
   text-transform: uppercase;
-  margin: 0 10px;
+  margin: 0 175px;
+  line-height: 37px;
+
 }
 
-
-nav.menu ul li a {
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  border-radius: 10px 10px;
-}
-nav.menu ul li a:after {
+.link:after,
+.link:before {
+  border: 0.7px solid #000;
+  opacity:0;
+  background:rgb(0, 0, 0);
+  content: " ";
   display: block;
-  position: absolute;
-  margin: 0;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  content: '.';
-  color: transparent;
-  width: 1px;
-  height: 1px;
-  border-radius: 50%;
-  background: transparent;
+  margin: auto;
+  transition: all 500ms ease-in-out;
+  width: 0;
+  
 }
 
-nav.menu ul li a:hover:after {
-  animation: circle 2s ease-in;
-}
-
-@keyframes circle {
-  0% {
-    margin: auto;
-    z-index: -1;
-    background: rgba(226, 226, 226, 0.534);
-  }
-  100% {
-    background: rgba(226, 226, 226, 0.534);
-    height: 5000%;
-    width: 5000%;
-    z-index: -1;
-    margin: auto;
-  }
+.link:hover:after,
+.link:hover:before {
+  opacity:1;
+  width: 70%;
 }
 
 .error {
@@ -95,12 +73,12 @@ nav.menu ul li a:hover:after {
   list-style-type: none;
   margin-top: 1em;
 }
+
 body{
   margin:0;
   padding:0;
   font-family: "Roboto", sans-serif;
 
 }
-
 
 </style>
