@@ -115,22 +115,31 @@ function needParam() {
     }
   }
 }
+
+function getImageName(image: ImageType){
+  if(image.name.length > 17){let newName = image.name.substring(0, image.name.length - (image.name.length-17));
+    newName = newName.concat("...");
+    return newName;
+  }else{
+    return image.name;
+  } 
+}
 </script>
 
 <template>
   <div id="home">
-    <h3>Choose an image</h3>
-    <div id="chooseImage" v-for="image in imageList" :key="image.id">
-      <input
-        type="radio"
-        v-model="selectedId"
-        :value="image.id"
-        @change="showImage"
-        :id="`input-` + image.id"
-      />
-      {{ image.name }}
-      <img id="createImage" />
-    </div>
+    <nav class="list-image">
+      <div id="chooseImage" v-for="image in imageList" :key="image.id">
+        <input type="radio" class="demo1" v-model="selectedId" :value="image.id" @change="showImage" :id="`input-` + image.id">
+        <ul class="home-ul">
+          <li class="home-li">
+            <label :for="`input-` + image.id" >
+              <a>{{ getImageName(image) }}</a>
+            </label>
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div id="applyAlgo">
       <p id="wait" hidden>Transformation de l'image en cours...</p>
       <select id="algolist" v-model="selectAlgo" @change="needParam">
@@ -148,16 +157,76 @@ function needParam() {
       <button @click="submitFile">Submit</button>
     </div>
     <div id="Form"></div>
+    <div>
+      <img id="createImage" />
+    </div>
   </div>
 </template>
 
 <style scoped>
-#createImage{
-  float: right;
-  height: 80vh;
+
+#home{
+  border-left: 200px solid black;
+  display: inline-block;
 }
 
-#home {
-  text-align: left;
+#createImage{
+  height: 80vh;
+  float:right;
 }
+
+body {
+  height: 100vh;
+}
+
+nav.list-image {
+  float: left;
+}
+
+ul.home-ul {
+  display: flex;
+  align-items: start;
+  list-style-type: none;
+
+}
+ul.home-ul li.home-li {
+  padding: 6px 0;
+  margin-left: -200px;
+}
+ul.home-ul li.home-li a {
+  position: relative;
+  display: block;
+  padding: 4px 0;
+  color: #ecf0f1;
+  transition: 0.5s;
+}
+ul.home-ul li.home-li a::after {
+  position: absolute;
+  content: "";
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #ffffff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s;
+}
+ul.home-ul li.home-li a:hover {
+  color: #95a5a6;
+}
+ul.home-ul li.home-li a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+#chooseImage label{
+  cursor: pointer;
+}
+
+input[type="radio"].demo1 {
+  display: none;
+}
+
+
 </style>

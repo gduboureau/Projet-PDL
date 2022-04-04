@@ -3,6 +3,7 @@ package pdl.backend;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.ImageIO;
 
@@ -27,7 +28,7 @@ public class Image {
   }
 
   public String getName() {
-    return name;
+    return FilenameUtils.removeExtension(name);
   }
 
   public String getSize(){
