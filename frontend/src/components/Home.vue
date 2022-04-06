@@ -117,116 +117,102 @@ function needParam() {
 }
 
 function getImageName(image: ImageType){
-  if(image.name.length > 17){let newName = image.name.substring(0, image.name.length - (image.name.length-17));
-    newName = newName.concat("...");
-    return newName;
-  }else{
     return image.name;
-  } 
 }
 </script>
 
 <template>
   <div id="home">
-    <nav class="list-image">
+    <nav class="category">
+      <!-- pour le bouton image ou algo -->
+    </nav>
+
+    <nav class="slidebar">
       <div id="chooseImage" v-for="image in imageList" :key="image.id">
-        <input type="radio" class="demo1" v-model="selectedId" :value="image.id" @change="showImage" :id="`input-` + image.id">
+        <!-- <input type="radio" class="radio" v-model="selectedId" :value="image.id" @change="showImage" :id="`input-` + image.id">
         <ul class="home-ul">
           <li class="home-li">
             <label :for="`input-` + image.id" >
               <a>{{ getImageName(image) }}</a>
             </label>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </nav>
+
+    <nav class="option">
+    </nav>
+    
     <div id="applyAlgo">
       <p id="wait" hidden>Transformation de l'image en cours...</p>
-      <select id="algolist" v-model="selectAlgo" @change="needParam">
+      <!-- <select id="algolist" v-model="selectAlgo" @change="needParam">
         <option v-for="algo in algoList" :value="algo.name" :key="algo.name">
-          {{ algo.name }}
+          {{ algo.name }} 
         </option>
-      </select>
-      <button @click="showImageWithAlgo">apply algo</button>
-      <button @click="deleteImage">Delete the image</button>
+      </select> -->
+      <!-- <button @click="showImageWithAlgo">apply algo</button>
+      <button @click="deleteImage">Delete the image</button> -->
     </div>
-    <div>
-      <input type="file" id="file" ref="file" @change="handleFileUpload" />
+    <div id="upload">
+      <!-- <input type="file" id="file" ref="file" @change="handleFileUpload" /> -->
     </div>
-    <div>
-      <button @click="submitFile">Submit</button>
+    <div id="submit">
+      <!-- <button @click="submitFile">Submit</button> -->
     </div>
     <div id="Form"></div>
     <div>
       <img id="createImage" />
     </div>
+    
   </div>
 </template>
 
 <style scoped>
 
 #home{
-  border-left: 200px solid black;
-  display: inline-block;
+  display: flex;
+  background: #1C1D26;
+} 
+
+.slidebar{
+  width : 17.6vw;
+  min-width: 120px;
+  height : 90.1vh;
+  background : #242631;
+  border-right: 1px solid #353948;
 }
 
-#createImage{
-  height: 80vh;
-  float:right;
+.category{
+  width : 3.64vw;
+  min-width: 30px;
+  height : 90.1vh;
+  background : #242631;
+  border-right: 1px solid #353948;
 }
 
-body {
-  height: 100vh;
-}
-
-nav.list-image {
-  float: left;
+.option{
+  margin-top: calc(90.1vh - 60px);
+  height: 59px;
+  width : 100vw;
+  background : #242631;
+  border-top: 1px solid #353948;
 }
 
 ul.home-ul {
-  display: flex;
-  align-items: start;
-  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
 
-}
-ul.home-ul li.home-li {
-  padding: 6px 0;
-  margin-left: -200px;
-}
-ul.home-ul li.home-li a {
-  position: relative;
-  display: block;
-  padding: 4px 0;
-  color: #ecf0f1;
-  transition: 0.5s;
-}
-ul.home-ul li.home-li a::after {
-  position: absolute;
-  content: "";
-  top: 100%;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: #ffffff;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.5s;
-}
 ul.home-ul li.home-li a:hover {
   color: #95a5a6;
-}
-ul.home-ul li.home-li a:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
 }
 
 #chooseImage label{
   cursor: pointer;
 }
 
-input[type="radio"].demo1 {
+input[type="radio"].radio {
   display: none;
 }
-
 
 </style>

@@ -100,7 +100,7 @@ img {
 .gallery-display {
   display: flex;
   margin-left:75px;
-  margin-top:35px;
+  margin-top:75px;
   flex-wrap: wrap;
   justify-content: center;
 }
