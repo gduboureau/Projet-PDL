@@ -119,40 +119,66 @@ function needParam() {
 function getImageName(image: ImageType){
     return image.name;
 }
+
+function showImageList(element:string){
+  if(element == "selectimg"){
+    document.getElementById("algo").hidden = true;
+    document.getElementById("showImgIfClicked").hidden = false;
+  }else if(element == "algo"){
+    document.getElementById("showImgIfClicked").hidden = true;
+    document.getElementById("algo").hidden = false;
+  }
+}
+
 </script>
 
 <template>
   <div id="home">
     <nav class="category">
+      <button class="selectimg" v-on:click="showImageList('selectimg')">
+        <img src="../assets/selectimg.png"/>
+      </button>
+
+      <button class="algo">
+        <img src="../assets/algo.png" v-on:click="showImageList('algo')"/>
+      </button>
       <!-- pour le bouton image ou algo -->
     </nav>
 
     <nav class="slidebar">
-      <div id="chooseImage" v-for="image in imageList" :key="image.id">
-        <!-- <input type="radio" class="radio" v-model="selectedId" :value="image.id" @change="showImage" :id="`input-` + image.id">
-        <ul class="home-ul">
-          <li class="home-li">
-            <label :for="`input-` + image.id" >
-              <a>{{ getImageName(image) }}</a>
-            </label>
-          </li>
-        </ul> -->
+      <div id="showImgIfClicked">
+        <div id="chooseImage" v-for="image in imageList" :key="image.id">
+          <input type="radio" class="radio" v-model="selectedId" :value="image.id" @change="showImage" :id="`input-` + image.id">
+            <ul class="home-ul">
+              <li class="home-li">
+                <label>
+                  <img id="choosenImg" :src="`/images/`+ image.id"/>
+                </label>
+              </li>
+          </ul> 
+        </div>
+      </div>
+      <div id="algo" hidden>
+        <div id="applyAlgo">
+          <p id="wait" hidden>Transformation de l'image en cours...</p>
+          <div id="chooseAlgo" v-for="algo in algoList" :key="algo.name">
+            <input type="radio" class="radio" v-model="selectAlgo" :value="algo.name" @change="needParam">
+              <ul>
+                <li class="home-li">
+                  <label>
+                    <a>{{algo.name}}</a>
+                  </label>
+                </li>
+            </ul> 
+          </div>
+          <!--<button @click="showImageWithAlgo">apply algo</button> !-->
+        </div>
       </div>
     </nav>
 
     <nav class="option">
     </nav>
-    
-    <div id="applyAlgo">
-      <p id="wait" hidden>Transformation de l'image en cours...</p>
-      <!-- <select id="algolist" v-model="selectAlgo" @change="needParam">
-        <option v-for="algo in algoList" :value="algo.name" :key="algo.name">
-          {{ algo.name }} 
-        </option>
-      </select> -->
-      <!-- <button @click="showImageWithAlgo">apply algo</button>
-      <button @click="deleteImage">Delete the image</button> -->
-    </div>
+    <!-- <button @click="deleteImage">Delete the image</button> -->
     <div id="upload">
       <!-- <input type="file" id="file" ref="file" @change="handleFileUpload" /> -->
     </div>
@@ -174,20 +200,78 @@ function getImageName(image: ImageType){
   background: #1C1D26;
 } 
 
-.slidebar{
-  width : 17.6vw;
-  min-width: 120px;
-  height : 90.1vh;
-  background : #242631;
-  border-right: 1px solid #353948;
-}
-
 .category{
   width : 3.64vw;
   min-width: 30px;
   height : 90.1vh;
   background : #242631;
   border-right: 1px solid #353948;
+}
+
+.selectimg, .algo{
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.selectimg img{
+  width: 1.8vw;
+  min-width: 20px;
+  margin-top: 4vh;
+  margin-left: max(calc(0.4vw - 4px),-1px);
+  opacity: 0.5;
+}
+
+.algo img{
+  width: 1.5vw;
+  min-width: 18px;
+  margin-top: 5vh;
+  margin-left: max(calc(0.6vw - 5px),0px);
+  opacity: 0.5;
+}
+
+.algo img:hover, .selectimg img:hover{
+  opacity: 1;
+  transition: 0.3s;
+}
+
+
+.slidebar{
+  width : 17.6vw;
+  min-width: 120px;
+  height : 90.1vh;
+  background : #242631;
+  border-right: 1px solid #353948;
+  overflow-y:auto;
+}
+
+.slidebar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.slidebar::-webkit-scrollbar-track {
+  background-color: #11171a88;
+  border-radius: 10px;
+}
+.slidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.249);
+  border-radius: 10px;
+}
+
+.home-li{
+  list-style-type: none;
+}
+
+#choosenImg{
+  margin: 2%;
+  float: left;
+  object-fit: cover;
+}
+
+.home-li img{
+  width: 90px;
+  height: 90px;
+  border-radius: 7px;
 }
 
 .option{
@@ -201,6 +285,7 @@ function getImageName(image: ImageType){
 ul.home-ul {
   margin-block-start: 0;
   margin-block-end: 0;
+  padding-inline-start: 15px;
 }
 
 ul.home-ul li.home-li a:hover {
