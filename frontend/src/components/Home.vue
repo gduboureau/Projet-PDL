@@ -5,7 +5,7 @@ import { ImageType } from "../image";
 import { AlgoTypes } from "../algorithms";
 
 const param = ref("");
-const selectedId = ref(-1);
+const CurrentId = ref(-1);
 const imageList = ref<ImageType[]>([]);
 const selectAlgo = ref("");
 const algoList = ref<AlgoTypes[]>([]);
@@ -32,8 +32,23 @@ function submitFile() {
   location.reload();
 }
 
-function handleFileUpload(event: Event) {
+async function handleFileUpload(event: Event) {
   target.value = (event.target as HTMLInputElement);
+  if (target.value !== null && target.value !== undefined && target.value.files !== null) {
+    const file = target.value.files[0];
+    if (file === undefined)
+      return;
+    let formData = new FormData();
+    formData.append("file", file);
+    await api.createImage(formData).then(() => {
+      if (target.value !== undefined)
+        target.value.value = '';
+    }).catch(e => {
+      console.log(e.message);
+      alert("Error: 415 Unsupported Media Type");
+    });
+  }
+  location.reload();
 }
 
 function getAlgoList() {
@@ -53,9 +68,9 @@ function getImageList() {
   });
 }
 
-function showImage() {
-  var id = document.getElementById("createImage");
-  id.setAttribute("src", "images/" + selectedId.value);
+function showImage(id:number) {
+  CurrentId.value = id;
+    document.getElementById("createImage")!.setAttribute("src", "images/" + id);
 }
 
 async function applyAlgo(prop: number,name: String,parameter: String): Promise<Blob> {
@@ -63,7 +78,7 @@ async function applyAlgo(prop: number,name: String,parameter: String): Promise<B
 }
 
 async function deleteImage(): Promise<void> {
-  await api.deleteImage(selectedId.value);
+  await api.deleteImage(CurrentId.value);
   location.reload();
 }
 
@@ -90,9 +105,9 @@ async function showImageWithAlgo() {
     document.getElementById("myForm")!.remove();
   }
   document!.getElementById("wait")!.hidden = false;
-  await applyAlgo(selectedId.value, selectAlgo.value, param.value);
+  await applyAlgo(CurrentId.value, selectAlgo.value, param.value);
   document!.getElementById("wait")!.hidden = true;
-  document.getElementById("createImage").setAttribute("src","images/"+selectedId.value+"?algorithm="+selectAlgo.value+param.value);
+  document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+param.value);
 }
 
 function needParam() {
@@ -116,81 +131,100 @@ function needParam() {
   }
 }
 
-function getImageName(image: ImageType){
-    return image.name;
-}
-
-function showImageList(element:string){
+function showcategory(element:string){
   if(element == "selectimg"){
-    document.getElementById("algo").hidden = true;
-    document.getElementById("showImgIfClicked").hidden = false;
-  }else if(element == "algo"){
-    document.getElementById("showImgIfClicked").hidden = true;
-    document.getElementById("algo").hidden = false;
+    document.getElementById("algo")!.hidden = true;
+    document.getElementById("showImgIfClicked")!.hidden = false;
+    document.getElementById("uploadimg")!.hidden = false;
+    document.getElementById("slidebar")!.style.height = "calc(90.1vh - 60px)";
+  }else if(element == "selectalgo"){
+    document.getElementById("showImgIfClicked")!.hidden = true;
+    document.getElementById("algo")!.hidden = false;
+    document.getElementById("slidebar")!.style.height = "90.1vh";
+    document.getElementById("uploadimg")!.hidden = true;
   }
 }
 
 </script>
 
 <template>
+
   <div id="home">
+
     <nav class="category">
-      <button class="selectimg" v-on:click="showImageList('selectimg')">
+      <button class="selectimg" v-on:click="showcategory('selectimg')">
         <img src="../assets/selectimg.png"/>
       </button>
 
-      <button class="algo">
-        <img src="../assets/algo.png" v-on:click="showImageList('algo')"/>
+      <button class="selectalgo">
+        <img src="../assets/selectalgo.png" v-on:click="showcategory('selectalgo')"/>
       </button>
-      <!-- pour le bouton image ou algo -->
     </nav>
 
-    <nav class="slidebar">
+
+    <nav class="slidebar" id="slidebar">
+
       <div id="showImgIfClicked">
-        <div id="chooseImage" v-for="image in imageList" :key="image.id">
-          <input type="radio" class="radio" v-model="selectedId" :value="image.id" @change="showImage" :id="`input-` + image.id">
-            <ul class="home-ul">
-              <li class="home-li">
-                <label>
-                  <img id="choosenImg" :src="`/images/`+ image.id"/>
-                </label>
-              </li>
-          </ul> 
+        <div class="listImg" v-for="image in imageList" :key="image.id">
+          <!-- <input type="radio" class="radio" v-model="selectedId" :value="image.id" :id="`input-` + image.id"> -->
+            <!-- <ul class="Img-ul"> -->
+              <!-- <li class="Img-li"> -->
+                <!-- <label> -->
+                  <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
+                <!-- </label> -->
+              <!-- </li> -->
+          <!-- </ul>  -->
         </div>
       </div>
+
       <div id="algo" hidden>
         <div id="applyAlgo">
           <p id="wait" hidden>Transformation de l'image en cours...</p>
           <div id="chooseAlgo" v-for="algo in algoList" :key="algo.name">
-            <input type="radio" class="radio" v-model="selectAlgo" :value="algo.name" @change="needParam">
-              <ul>
-                <li class="home-li">
-                  <label>
+            <!-- <input type="radio" class="radio" v-model="selectAlgo" :value="algo.name" @change="needParam"> -->
+              <!-- <ul>
+                <li class="Algo-li"> -->
+                  <!-- <label> -->
                     <a>{{algo.name}}</a>
-                  </label>
-                </li>
-            </ul> 
+                  <!-- </label> -->
+                <!-- </li>
+            </ul>  -->
           </div>
           <!--<button @click="showImageWithAlgo">apply algo</button> !-->
         </div>
       </div>
     </nav>
 
+    <nav class="uploadimg" id="uploadimg">
+      <div id="upload">
+        <label class="custom-file-upload">
+          <input type="file" id="file" ref="file" @change="handleFileUpload" />
+          <i class="fa fa-cloud-upload"></i> Ajouter une image
+          <img src="../assets/addimg.png" />
+        </label>
+      </div>
+    </nav>
+
     <nav class="option">
     </nav>
     <!-- <button @click="deleteImage">Delete the image</button> -->
+
     <div id="upload">
       <!-- <input type="file" id="file" ref="file" @change="handleFileUpload" /> -->
     </div>
+
     <div id="submit">
       <!-- <button @click="submitFile">Submit</button> -->
     </div>
+
     <div id="Form"></div>
+
     <div>
       <img id="createImage" />
     </div>
     
   </div>
+  
 </template>
 
 <style scoped>
@@ -208,7 +242,7 @@ function showImageList(element:string){
   border-right: 1px solid #353948;
 }
 
-.selectimg, .algo{
+.selectimg, .selectalgo{
   border: none;
   background: none;
   cursor: pointer;
@@ -220,17 +254,19 @@ function showImageList(element:string){
   margin-top: 4vh;
   margin-left: max(calc(0.4vw - 4px),-1px);
   opacity: 0.5;
+  transition: 0.3s;
 }
 
-.algo img{
+.selectalgo img{
   width: 1.5vw;
   min-width: 18px;
   margin-top: 5vh;
   margin-left: max(calc(0.6vw - 5px),0px);
   opacity: 0.5;
+  transition: 0.3s;
 }
 
-.algo img:hover, .selectimg img:hover{
+.selectalgo img:hover, .selectimg img:hover{
   opacity: 1;
   transition: 0.3s;
 }
@@ -239,7 +275,7 @@ function showImageList(element:string){
 .slidebar{
   width : 17.6vw;
   min-width: 120px;
-  height : 90.1vh;
+  height : calc(90.1vh - 60px);
   background : #242631;
   border-right: 1px solid #353948;
   overflow-y:auto;
@@ -258,20 +294,51 @@ function showImageList(element:string){
   border-radius: 10px;
 }
 
-.home-li{
-  list-style-type: none;
-}
-
-#choosenImg{
+.Imginlist{
   margin: 2%;
   float: left;
   object-fit: cover;
-}
-
-.home-li img{
+  cursor: pointer;
   width: 90px;
   height: 90px;
   border-radius: 7px;
+}
+
+.listImg{
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 15px;
+}
+
+.uploadimg{
+  background: blue;
+  margin-top: calc(90.1vh - 60px);
+  width : 17.5vw;
+  margin-left: min(-14.5vw,-120px);
+  min-width: 120px;
+  background : #242631;
+  border-top: 1px solid #353948;
+  border-right: 1px solid #353948;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  border-radius: 6px;
+  padding: 6px 18px;
+  margin-left:20px;
+  margin-top: 13px;
+  cursor: pointer;
+  background: #11446ee6;
+  color: rgba(180, 180, 180, 0.929);
+}
+
+.custom-file-upload img{
+  width: 10px;
+  height: 10px;
 }
 
 .option{
@@ -280,24 +347,6 @@ function showImageList(element:string){
   width : 100vw;
   background : #242631;
   border-top: 1px solid #353948;
-}
-
-ul.home-ul {
-  margin-block-start: 0;
-  margin-block-end: 0;
-  padding-inline-start: 15px;
-}
-
-ul.home-ul li.home-li a:hover {
-  color: #95a5a6;
-}
-
-#chooseImage label{
-  cursor: pointer;
-}
-
-input[type="radio"].radio {
-  display: none;
 }
 
 </style>
