@@ -39,7 +39,7 @@ function Page(link:string){
 
 .menu {
   letter-spacing: 1px;
-  height: 9.7vh;
+  height: 9.6vh;
   min-height: 40px;
   background: #242631;
   border-bottom: 1px solid #353948;

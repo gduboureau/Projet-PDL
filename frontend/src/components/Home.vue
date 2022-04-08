@@ -152,11 +152,15 @@ function showcategory(element:string){
     document.getElementById("showImgIfClicked")!.hidden = false;
     document.getElementById("uploadimg")!.hidden = false;
     document.getElementById("slidebar")!.style.height = "calc(90.1vh - 60px)";
+    document.getElementById("selectalgo")!.style.opacity = "0.5";
+    document.getElementById("selectimg")!.style.opacity = "1";
   }else if(element == "selectalgo"){
     document.getElementById("showImgIfClicked")!.hidden = true;
     document.getElementById("algo")!.hidden = false;
     document.getElementById("slidebar")!.style.height = "90.1vh";
     document.getElementById("uploadimg")!.hidden = true;
+    document.getElementById("selectimg")!.style.opacity = "0.5";
+    document.getElementById("selectalgo")!.style.opacity = "1";
   }
 }
 
@@ -200,11 +204,11 @@ function rangeSlide(name: string) {
 
     <nav class="category">
       <button class="selectimg" v-on:click="showcategory('selectimg')">
-        <img src="../assets/selectimg.png"/>
+        <img id = "selectimg" src="../assets/selectimg.png"/>
       </button>
 
       <button class="selectalgo" v-on:click="showcategory('selectalgo')">
-        <img src="../assets/selectalgo.png"/>
+        <img id="selectalgo" src="../assets/selectalgo.png"/>
       </button>
     </nav>
 
@@ -212,8 +216,10 @@ function rangeSlide(name: string) {
     <nav class="slidebar" id="slidebar">
 
       <div id="showImgIfClicked">
-        <div class="listImg" v-for="image in imageList" :key="image.id">
-          <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
+        <div class="ParentlistImg">
+          <div class="listImg" v-for="image in imageList" :key="image.id">
+            <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
+          </div>
         </div>
       </div>
 
@@ -262,7 +268,7 @@ function rangeSlide(name: string) {
     </nav>
 
     <nav class="option">
-      <button @click="showImageWithAlgo">apply algo</button>
+      <button class="buttonapply" @click="showImageWithAlgo">Apply</button>
     </nav>
     
   </body>
@@ -307,11 +313,6 @@ body{
   opacity: 0.5;
   transition: 0.3s;
   cursor: pointer;
-}
-
-.selectalgo img:hover, .selectimg img:hover{
-  opacity: 1;
-  transition: 0.3s;
 }
 
 div.c{
@@ -376,17 +377,20 @@ div.p{
   border-radius: 10px;
 }
 
+.ParentlistImg{
+  text-align: center;
+}
+
 .listImg{
-  margin-block-start: 0;
-  margin-block-end: 0;
-  padding-inline-start: 15px;
+  display: inline-block;
 }
 
 .Imginlist{
-  width: 90px;
-  height: 90px;
-  margin: 2%;
-  float: left;
+  width: 6vw;
+  min-width: 80px;
+  height: 6vw;
+  min-height: 80px;
+  margin: 3px;
   object-fit: cover;
   cursor: pointer;
   border-radius: 7px;
@@ -459,6 +463,26 @@ input[type="file"] {
   width : 100vw;
   background : #242631;
   border-top: 1px solid #353948;
+}
+
+.buttonapply {
+  margin-left: max(calc(80vw - 150px), 55vw);
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.678);
+  background: #1C1D26;
+  border: 2px solid #353948;
+  padding: 10px 10px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #353948;
+  -webkit-transition: ease-out 0.5s;
+  -moz-transition: ease-out 0.5s;
+  transition: ease-out 0.5s;
+}
+
+.buttonapply:hover {
+  box-shadow: inset 100px 0 0 0 #353948;
 }
 
 </style>
