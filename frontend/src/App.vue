@@ -38,6 +38,7 @@ function Page(link:string){
 @import url('https://fonts.googleapis.com/css?family=Roboto:500,900,100,300,700,400');
 
 .menu {
+  letter-spacing: 1px;
   height: 9.7vh;
   min-height: 40px;
   background: #242631;
@@ -111,6 +112,10 @@ function Page(link:string){
   font-weight: bold;
   list-style-type: none;
   margin-top: 1em;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 body{

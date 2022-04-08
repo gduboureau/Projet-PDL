@@ -162,17 +162,17 @@ function showcategory(element:string){
 
 function selectedAlgo(name: string){
   if (selectAlgo.value == name){
-    document.getElementById("name"+name).style.opacity = "0.5";
+    document.getElementById("name"+name)!.style.opacity = "0.5";
     selectAlgo.value = "";
     return;
   } 
   selectAlgo.value = name;
   for (let i = 0; i < algoList.value.length; i++){
     if (name != algoList.value[i].name){
-      document.getElementById("name"+algoList.value[i].name).style.opacity = "0.5";
+      document.getElementById("name"+algoList.value[i].name)!.style.opacity = "0.5";
     }
   }
-  document.getElementById("name"+name).style.opacity = "1";
+  document.getElementById("name"+name)!.style.opacity = "1";
   var slider = document.getElementById("range"+name) as HTMLInputElement;
   if (name == "ColorFilter"){
     slider.setAttribute("min","0");
@@ -189,14 +189,14 @@ function selectedAlgo(name: string){
 
 function rangeSlide(name: string) {
   const val = (document.getElementById('range' +name) as HTMLInputElement).value;
-  document.getElementById('rangeValue'+name).innerHTML = val;
+  document.getElementById('rangeValue'+name)!.innerHTML = val;
 }
 
 </script>
 
 <template>
 
-  <div id="home">
+  <body id="home">
 
     <nav class="category">
       <button class="selectimg" v-on:click="showcategory('selectimg')">
@@ -213,14 +213,7 @@ function rangeSlide(name: string) {
 
       <div id="showImgIfClicked">
         <div class="listImg" v-for="image in imageList" :key="image.id">
-          <!-- <input type="radio" class="radio" v-model="selectedId" :value="image.id" :id="`input-` + image.id"> -->
-            <!-- <ul class="Img-ul"> -->
-              <!-- <li class="Img-li"> -->
-                <!-- <label> -->
-                  <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
-                <!-- </label> -->
-              <!-- </li> -->
-          <!-- </ul>  -->
+          <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
         </div>
       </div>
 
@@ -257,37 +250,33 @@ function rangeSlide(name: string) {
       </div>
     </nav>
 
+     <nav class="uploadimg" id="uploadimg">
+      <label class="buttonupload">
+        <input type="file" id="file" ref="file" @change="handleFileUpload"/>
+        Add Image
+      </label>
+    </nav>
+
+    <nav class="Imgdisplayer">
+      <img id="createImage" />
+    </nav>
+
     <nav class="option">
       <button @click="showImageWithAlgo">apply algo</button>
     </nav>
-    <!-- <button @click="deleteImage">Delete the image</button> -->
-
-    <div id="upload">
-      <!-- <input type="file" id="file" ref="file" @change="handleFileUpload" /> -->
-    </div>
-
-    <div id="submit">
-      <!-- <button @click="submitFile">Submit</button> -->
-    </div>
-
-    <div id="Form"></div>
-
-    <div>
-      <img id="createImage" />
-    </div>
     
-  </div>
+  </body>
   
 </template>
 
 <style scoped>
 
-#home{
+body{
   display: flex;
-  background: #1C1D26;
 } 
 
 .category{
+  z-index:2;
   width : 3.64vw;
   min-width: 30px;
   height : 90.1vh;
@@ -298,7 +287,6 @@ function rangeSlide(name: string) {
 .selectimg, .selectalgo{
   border: none;
   background: none;
-  cursor: pointer;
 }
 
 .selectimg img{
@@ -308,6 +296,7 @@ function rangeSlide(name: string) {
   margin-left: max(calc(0.4vw - 4px),-1px);
   opacity: 0.5;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 .selectalgo img{
@@ -317,6 +306,7 @@ function rangeSlide(name: string) {
   margin-left: max(calc(0.6vw - 5px),0px);
   opacity: 0.5;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 .selectalgo img:hover, .selectimg img:hover{
@@ -364,6 +354,7 @@ div.p{
 
 
 .slidebar{
+  z-index:1;
   width : 17.6vw;
   min-width: 120px;
   height : calc(90.1vh - 60px);
@@ -385,30 +376,31 @@ div.p{
   border-radius: 10px;
 }
 
-.Imginlist{
-  margin: 2%;
-  float: left;
-  object-fit: cover;
-  cursor: pointer;
-  width: 90px;
-  height: 90px;
-  border-radius: 7px;
-}
-
 .listImg{
   margin-block-start: 0;
   margin-block-end: 0;
   padding-inline-start: 15px;
 }
 
+.Imginlist{
+  width: 90px;
+  height: 90px;
+  margin: 2%;
+  float: left;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 7px;
+}
+
 .uploadimg{
-  background: blue;
-  margin-top: calc(90.1vh - 60px);
-  width : 17.5vw;
-  margin-left: min(-14.5vw,-120px);
+  z-index:1;
+  background: #242631;
+  width : 17.75vw;
   min-width: 120px;
-  background : #242631;
+  height: 59px;
   border-top: 1px solid #353948;
+  margin-top: calc(90.1vh - 60px);
+  margin-left: min(-14.7vw,-121px);
   border-right: 1px solid #353948;
 }
 
@@ -416,23 +408,52 @@ input[type="file"] {
   display: none;
 }
 
-.custom-file-upload {
-  display: inline-block;
-  border-radius: 6px;
-  padding: 6px 18px;
-  margin-left:20px;
-  margin-top: 13px;
-  cursor: pointer;
-  background: #11446ee6;
-  color: rgba(180, 180, 180, 0.929);
+.uploadimg{
+  text-align: center;
+  font-size: 1.7vw;
 }
 
-.custom-file-upload img{
-  width: 10px;
-  height: 10px;
+.buttonupload {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.678);
+  background: #353948;
+  border: 2px solid #353948;
+  border-radius: 20px;
+  padding: 10px 10px;
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #1C1D26;
+  -webkit-transition: ease-out 0.5s;
+  -moz-transition: ease-out 0.5s;
+  transition: ease-out 0.5s;
+}
+
+.buttonupload:hover {
+  box-shadow: inset 0 -100px 0 0 #1C1D26;
+}
+
+.Imgdisplayer{
+  position:absolute;
+  background : #1C1D26;
+  height : calc(90.1vh - 60px);
+  width: calc(100vw - 150px);
+  max-width: 82.6vw;
+  margin-left: max(17.4vw, 150px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Imgdisplayer img{
+  max-height: calc(75vh - 50px);
+  min-height: 20px;
+  max-width: 65vw;
 }
 
 .option{
+  z-index: 1;
   margin-top: calc(90.1vh - 60px);
   height: 59px;
   width : 100vw;
