@@ -4,7 +4,6 @@ import { api } from "../http-api";
 import { ImageType } from "../image";
 import { AlgoTypes } from "../algorithms";
 
-const param = ref("");
 const CurrentId = ref(-1);
 const imageList = ref<ImageType[]>([]);
 const selectAlgo = ref("");
@@ -70,7 +69,7 @@ function getImageList() {
 
 function showImage(id:number) {
   CurrentId.value = id;
-    document.getElementById("createImage")!.setAttribute("src", "images/" + id);
+  document.getElementById("createImage")!.setAttribute("src", "images/" + id);
 }
 
 async function applyAlgo(prop: number,name: String,parameter: String): Promise<Blob> {
@@ -82,7 +81,7 @@ async function deleteImage(): Promise<void> {
   location.reload();
 }
 
-async function showImageWithAlgo() {
+/*async function showImageWithAlgo() {
   var input = document.getElementById("myForm") as HTMLInputElement;
   const algo = document.getElementById("algolist") as HTMLSelectElement;
   if (algo.options[algo.selectedIndex] === undefined) return;
@@ -108,9 +107,9 @@ async function showImageWithAlgo() {
   await applyAlgo(CurrentId.value, selectAlgo.value, param.value);
   document!.getElementById("wait")!.hidden = true;
   document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+param.value);
-}
+}*/
 
-function needParam() {
+/*function needParam() {
   const algo = document.getElementById("algolist") as HTMLSelectElement;
   var select = algo.options[algo.selectedIndex].text;
   for (let i = 0; i < algoList.value.length; i++) {
@@ -129,6 +128,22 @@ function needParam() {
       }
     }
   }
+}*/
+
+async function showImageWithAlgo() {
+  if (selectAlgo.value != "" && CurrentId.value != -1){
+    const val = ref("");
+    if (selectAlgo.value == "ColorFilter" || selectAlgo.value == "meanFilter" || selectAlgo.value == "Brightness"){
+      val.value = "&p1=" + (document.getElementById('range' +selectAlgo.value) as HTMLInputElement).value;
+    }else{
+      val.value = "";
+    }
+    console.log(val.value);
+    document!.getElementById("wait")!.hidden = false;
+    await applyAlgo(CurrentId.value, selectAlgo.value, val.value);
+    document!.getElementById("wait")!.hidden = true;
+    document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value);
+  }
 }
 
 function showcategory(element:string){
@@ -145,6 +160,38 @@ function showcategory(element:string){
   }
 }
 
+function selectedAlgo(name: string){
+  if (selectAlgo.value == name){
+    document.getElementById("name"+name).style.opacity = "0.5";
+    selectAlgo.value = "";
+    return;
+  } 
+  selectAlgo.value = name;
+  for (let i = 0; i < algoList.value.length; i++){
+    if (name != algoList.value[i].name){
+      document.getElementById("name"+algoList.value[i].name).style.opacity = "0.5";
+    }
+  }
+  document.getElementById("name"+name).style.opacity = "1";
+  var slider = document.getElementById("range"+name) as HTMLInputElement;
+  if (name == "ColorFilter"){
+    slider.setAttribute("min","0");
+    slider.setAttribute("max","360");
+    slider.defaultValue = "0";
+  }else if(name == "meanFilter"){
+    slider.setAttribute("min","1");
+    slider.setAttribute("max","20");
+    slider.defaultValue = "1";
+  }else if (name == "Brightness"){
+    slider.defaultValue = "0";
+  }
+}
+
+function rangeSlide(name: string) {
+  const val = (document.getElementById('range' +name) as HTMLInputElement).value;
+  document.getElementById('rangeValue'+name).innerHTML = val;
+}
+
 </script>
 
 <template>
@@ -156,8 +203,8 @@ function showcategory(element:string){
         <img src="../assets/selectimg.png"/>
       </button>
 
-      <button class="selectalgo">
-        <img src="../assets/selectalgo.png" v-on:click="showcategory('selectalgo')"/>
+      <button class="selectalgo" v-on:click="showcategory('selectalgo')">
+        <img src="../assets/selectalgo.png"/>
       </button>
     </nav>
 
@@ -181,16 +228,21 @@ function showcategory(element:string){
         <div id="applyAlgo">
           <p id="wait" hidden>Transformation de l'image en cours...</p>
           <div id="chooseAlgo" v-for="algo in algoList" :key="algo.name">
-            <!-- <input type="radio" class="radio" v-model="selectAlgo" :value="algo.name" @change="needParam"> -->
-              <!-- <ul>
-                <li class="Algo-li"> -->
-                  <!-- <label> -->
-                    <a>{{algo.name}}</a>
-                  <!-- </label> -->
-                <!-- </li>
-            </ul>  -->
+            <div class="c">
+              <input type="checkbox" class="checkbox" :id="`faq-1`+algo.name" v-on:click="selectedAlgo(algo.name)">
+              <h1 :id="`name`+algo.name">
+                <label class="inputlabel" :for="`faq-1`+algo.name">
+                  {{algo.name}}
+                </label>
+              </h1>
+              <div class="p" :id="`p`+algo.name">
+                <div v-if="algo.name == `Brightness` || algo.name == `ColorFilter` || algo.name == `meanFilter`">
+                  <span :id="`rangeValue`+algo.name"></span>
+                  <input :id="`range` + algo.name" type="range" min="-255" max="255" v-on:Change="rangeSlide(algo.name)"> 
+                </div>
+              </div>
+            </div>
           </div>
-          <!--<button @click="showImageWithAlgo">apply algo</button> !-->
         </div>
       </div>
     </nav>
@@ -206,6 +258,7 @@ function showcategory(element:string){
     </nav>
 
     <nav class="option">
+      <button @click="showImageWithAlgo">apply algo</button>
     </nav>
     <!-- <button @click="deleteImage">Delete the image</button> -->
 
@@ -269,6 +322,44 @@ function showcategory(element:string){
 .selectalgo img:hover, .selectimg img:hover{
   opacity: 1;
   transition: 0.3s;
+}
+
+div.c{
+  position: relative;
+  margin-left:2em;
+}
+.checkbox{
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  opacity:0;
+  visibility: 0;
+}
+
+.inputlabel{
+  cursor: pointer;
+  position: relative;
+}
+
+h1{
+  background-color: #242631;
+  color: rgb(243, 243, 243);
+  width: 100%;
+  text-align: left;
+  font-size: 15px;
+  opacity: 0.5;
+}
+
+div.p{
+  max-height:0px;
+  overflow: hidden;
+  transition:max-height 0.5s;
+  background-color: #242631;
+}
+
+.checkbox:checked ~ h1 ~ div.p{
+  max-height:100px;
 }
 
 
