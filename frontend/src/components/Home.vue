@@ -81,54 +81,6 @@ async function deleteImage(): Promise<void> {
   location.reload();
 }
 
-/*async function showImageWithAlgo() {
-  var input = document.getElementById("myForm") as HTMLInputElement;
-  const algo = document.getElementById("algolist") as HTMLSelectElement;
-  if (algo.options[algo.selectedIndex] === undefined) return;
-  var select = algo.options[algo.selectedIndex].text;
-  if (select == "Brightness" || select == "ColorFilter" || select == "meanFilter") {
-    param.value = "&p1=" + input.value;
-    if (input.value == "") {
-      alert("Vous devez rentrer une valeur.");
-      document.location.reload();
-      return;
-    } else if (select == "ColorFilter" && (parseInt(input.value) > 360 || parseInt(input.value) < 0)) {
-      alert("La valeur de teinte doit être comprise entre 0 et 360.");
-      document.location.reload();
-      return;
-    } else if (select == "meanFilter" && parseInt(input.value) < 0) {
-      alert("La valeur de flou doit être supérieure à 0.");
-      document.location.reload();
-      return;
-    }
-    document.getElementById("myForm")!.remove();
-  }
-  document!.getElementById("wait")!.hidden = false;
-  await applyAlgo(CurrentId.value, selectAlgo.value, param.value);
-  document!.getElementById("wait")!.hidden = true;
-  document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+param.value);
-}*/
-
-/*function needParam() {
-  const algo = document.getElementById("algolist") as HTMLSelectElement;
-  var select = algo.options[algo.selectedIndex].text;
-  for (let i = 0; i < algoList.value.length; i++) {
-    if (select == algoList.value[i].name && algoList.value[i].hasParameters == true && document.getElementById("myForm") == null) {
-      const galleryElt = document.getElementById("Form");
-      var x = document.createElement("input");
-      if (galleryElt !== null) {
-        x.setAttribute("id", "myForm");
-        x.setAttribute("type", "number");
-        galleryElt.appendChild(x);
-        return;
-      }
-    } else {
-      if (document.getElementById("myForm") != null && algoList.value[i].hasParameters == false && select == algoList.value[i].name) {
-        document.getElementById("myForm")!.remove();
-      }
-    }
-  }
-}*/
 
 async function showImageWithAlgo() {
   if (selectAlgo.value != "" && CurrentId.value != -1){
@@ -138,7 +90,6 @@ async function showImageWithAlgo() {
     }else{
       val.value = "";
     }
-    console.log(val.value);
     document!.getElementById("wait")!.hidden = false;
     await applyAlgo(CurrentId.value, selectAlgo.value, val.value);
     document!.getElementById("wait")!.hidden = true;
@@ -146,8 +97,21 @@ async function showImageWithAlgo() {
   }
 }
 
+function resetAlgoPanel(){
+  for (let i = 0; i < algoList.value.length; i++){
+    document.getElementById("name"+algoList.value[i].name).style.opacity = "0.5";
+    document.getElementById("showParam"+algoList.value[i].name).setAttribute("style","max-height:0px");
+    selectAlgo.value = "";
+    if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
+      (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
+      document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+    }
+  }
+}
+
 function showcategory(element:string){
   if(element == "selectimg"){
+    resetAlgoPanel();
     document.getElementById("algo")!.hidden = true;
     document.getElementById("showImgIfClicked")!.hidden = false;
     document.getElementById("slidebar")!.style.height = "calc(90.1vh - 60px)";
@@ -168,17 +132,24 @@ function showcategory(element:string){
 
 function selectedAlgo(name: string){
   if (selectAlgo.value == name){
-    document.getElementById("name"+name)!.style.opacity = "0.5";
+    document.getElementById("name"+name).style.opacity = "0.5";
+    document.getElementById("showParam"+name).setAttribute("style","max-height:0px");
     selectAlgo.value = "";
     return;
   } 
   selectAlgo.value = name;
   for (let i = 0; i < algoList.value.length; i++){
     if (name != algoList.value[i].name){
-      document.getElementById("name"+algoList.value[i].name)!.style.opacity = "0.5";
+      document.getElementById("name"+algoList.value[i].name).style.opacity = "0.5";
+      document.getElementById("showParam"+algoList.value[i].name).setAttribute("style","max-height:0px");
+      if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
+        (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
+        document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+      }
     }
   }
-  document.getElementById("name"+name)!.style.opacity = "1";
+  document.getElementById("name"+name).style.opacity = "1";
+  document.getElementById("showParam"+name).setAttribute("style","max-height:100px")
   var slider = document.getElementById("range"+name) as HTMLInputElement;
   if (name == "ColorFilter"){
     slider.setAttribute("min","0");
@@ -228,16 +199,16 @@ function rangeSlide(name: string) {
           <p id="wait" hidden>Transformation de l'image en cours...</p>
           <div id="chooseAlgo" v-for="algo in algoList" :key="algo.name">
             <div class="c">
-              <input type="checkbox" class="checkbox" :id="`faq-1`+algo.name" v-on:click="selectedAlgo(algo.name)">
+              <input type="checkbox" class="algorithmsname" :id="`algorithmsname`+algo.name" v-on:click="selectedAlgo(algo.name)">
               <h1 :id="`name`+algo.name">
-                <label class="inputlabel" :for="`faq-1`+algo.name">
+                <label class="inputlabel" :for="`algorithmsname`+algo.name">
                   {{algo.name}}
                 </label>
               </h1>
-              <div class="p" :id="`p`+algo.name">
+              <div class="showParam" :id="`showParam`+algo.name">
                 <div v-if="algo.name == `Brightness` || algo.name == `ColorFilter` || algo.name == `meanFilter`">
-                  <span :id="`rangeValue`+algo.name"></span>
-                  <input :id="`range` + algo.name" type="range" min="-255" max="255" v-on:Change="rangeSlide(algo.name)"> 
+                  <span class="rangeValue" :id="`rangeValue`+algo.name"></span>
+                  <input class="rangeParamValue" :id="`range` + algo.name" type="range" min="-255" max="255" v-on:Change="rangeSlide(algo.name)"> 
                 </div>
               </div>
             </div>
@@ -309,7 +280,7 @@ div.c{
   position: relative;
   margin-left:2em;
 }
-.checkbox{
+.algorithmsname{
   left: 0;
   top: 0;
   height: 100%;
@@ -332,15 +303,41 @@ h1{
   opacity: 0.5;
 }
 
-div.p{
+.showParam{
   max-height:0px;
   overflow: hidden;
   transition:max-height 0.5s;
   background-color: #242631;
 }
 
-.checkbox:checked ~ h1 ~ div.p{
-  max-height:100px;
+.rangeValue {
+  position: relative;
+  display: block;
+  margin-left: 70px;
+  font-size: 1em;
+  color: #999;
+  font-weight: 400;
+}
+
+.rangeParamValue{
+  width: 150px;
+  height: 12px;
+  -webkit-appearance: none;
+  background: rgba(17, 17, 17, 0.501);
+  outline: none;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.rangeParamValue::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #010101;
+  cursor: pointer;
+  border: 2px solid rgba(52, 52, 52, 0.496);
+  box-shadow: -407px 0 0 400px #90b5db65;
 }
 
 
