@@ -511,6 +511,14 @@ public class imageProcessing {
     }
   }
 
+  public static void sideGray(Planar<GrayU8> image, String side){
+    if (side.equals("right")){
+      rightGray(image);
+    }else if(side.equals("left")){
+      leftGray(image);
+    }
+  }
+
   /*
    * This method applies a filter that only keeps the red pixel of the image, the rest is in grayscale.
    *
@@ -708,6 +716,26 @@ public class imageProcessing {
           }
         }
       }
+    }
+  }
+
+  public static void keepColor(Planar<GrayU8> image, String color){
+    if (color == "red"){
+      keepRed(image);
+    }else if (color.equals("blue")){
+      keepBlue(image);
+    }else if (color.equals("purple")){
+      keepPurple(image);
+    }else if (color.equals("cold")){
+      keepCold(image);
+    }else if (color.equals("hot")){
+      keepHot(image);
+    }else if (color.equals("orange")){
+      keepOrange(image);
+    }else if (color.equals("green")){
+      keepGreen(image);
+    }else if (color.equals("yellow")){
+      keepYellow(image);
     }
   }
   

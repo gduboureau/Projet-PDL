@@ -9,6 +9,10 @@ const imageList = ref<ImageType[]>([]);
 const selectAlgo = ref("");
 const algoList = ref<AlgoTypes[]>([]);
 const target = ref<HTMLInputElement>();
+const listColor = ["purple","cold","hot","green","blue","yellow","red"];
+const sideList = ["right","left"];
+const color = ref("");
+const side = ref("");
 
 getImageList();
 getAlgoList();
@@ -87,6 +91,10 @@ async function showImageWithAlgo() {
     const val = ref("");
     if (selectAlgo.value == "ColorFilter" || selectAlgo.value == "meanFilter" || selectAlgo.value == "Brightness"){
       val.value = "&p1=" + (document.getElementById('range' +selectAlgo.value) as HTMLInputElement).value;
+    }else if(selectAlgo.value == "sideGray"){
+      val.value = "&p1=" + side.value;
+    }else if(selectAlgo.value == "keepColor"){
+      val.value = "&p1=" + color.value;
     }else{
       val.value = "";
     }
@@ -97,6 +105,7 @@ async function showImageWithAlgo() {
   }
 }
 
+
 function resetAlgoPanel(){
   for (let i = 0; i < algoList.value.length; i++){
     document.getElementById("name"+algoList.value[i].name).style.opacity = "0.5";
@@ -104,7 +113,21 @@ function resetAlgoPanel(){
     selectAlgo.value = "";
     if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
       (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
-      document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+      if (algoList.value[i].name == "meanFilter"){
+        document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "1";
+      }else{
+        document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+      }
+    }
+  }
+  for(let j = 0; j < sideList.length; j++){
+    if ((document.getElementById("sideParam"+sideList[j]) as HTMLInputElement).checked == true){
+      (document.getElementById("sideParam"+sideList[j]) as HTMLInputElement).checked = false;
+    }
+  }
+  for(let j = 0; j < listColor.length; j++){
+    if ((document.getElementById("colorParam"+listColor[j]) as HTMLInputElement).checked == true){
+      (document.getElementById("colorParam"+listColor[j]) as HTMLInputElement).checked = false;
     }
   }
 }
@@ -144,12 +167,31 @@ function selectedAlgo(name: string){
       document.getElementById("showParam"+algoList.value[i].name).setAttribute("style","max-height:0px");
       if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
         (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
-        document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+        if (algoList.value[i].name == "meanFilter"){
+          document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "1";
+        }else{
+          document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+        }
+      }
+      if (algoList.value[i].name == "sideGray"){
+      for(let j = 0; j < sideList.length; j++){
+        if ((document.getElementById("sideParam"+sideList[j]) as HTMLInputElement).checked == true){
+          (document.getElementById("sideParam"+sideList[j]) as HTMLInputElement).checked = false;
+          }
+        }
+      }
+      if (algoList.value[i].name == "keepColor"){
+        for(let j = 0; j < listColor.length; j++){
+          if ((document.getElementById("colorParam"+listColor[j]) as HTMLInputElement).checked == true){
+            (document.getElementById("colorParam"+listColor[j]) as HTMLInputElement).checked = false;
+          }
+        }
       }
     }
   }
+
   document.getElementById("name"+name).style.opacity = "1";
-  document.getElementById("showParam"+name).setAttribute("style","max-height:100px")
+  document.getElementById("showParam"+name).setAttribute("style","max-height:200px")
   var slider = document.getElementById("range"+name) as HTMLInputElement;
   if (name == "ColorFilter"){
     slider.setAttribute("min","0");
@@ -209,6 +251,22 @@ function rangeSlide(name: string) {
                 <div v-if="algo.name == `Brightness` || algo.name == `ColorFilter` || algo.name == `meanFilter`">
                   <span class="rangeValue" :id="`rangeValue`+algo.name"></span>
                   <input class="rangeParamValue" :id="`range` + algo.name" type="range" min="-255" max="255" v-on:Change="rangeSlide(algo.name)"> 
+                </div>
+                <div v-if="algo.name == `keepColor`">
+                  <div v-for="colors in listColor" :key="colors">
+                    <input type="radio" class="colorParam" :id="`colorParam` + colors" name="colorParameters" @click="color = colors">
+                    <label class="color" :for="`colorParam` + side">
+                      {{colors}}
+                    </label>
+                  </div>
+                </div>
+                <div class="divSides" v-if="algo.name == `sideGray`">
+                  <div v-for="sides in sideList" :key="sides">
+                    <input type="radio" name="sideParameters" :id="`sideParam` + sides" @click="side = sides">
+                    <label class="sideParam" :for="`sideParam` + sides">
+                      {{sides}}
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

@@ -48,6 +48,14 @@ public class ApplyAlgorithm {
         }else if (algo.equals("gaussFilter")){
             int kernel[][] = { { 1, 2, 3, 2, 1 }, { 2, 6, 8, 6, 2 }, { 3, 8, 10, 8, 3 }, { 2, 6, 8, 6, 2 }, { 1, 2, 3, 2, 1 } };
             imageProcessing.convolution(image, output, kernel);
+        }else if (algo.equals("solarize")){
+            imageProcessing.solarize(image);
+        }else if (algo.equals("negative")){
+            imageProcessing.negative(image);
+        }else if (algo.equals("sideGray")){
+            imageProcessing.sideGray(image, p1);
+        }else if (algo.equals("keepColor")){
+            imageProcessing.keepColor(image,p1);
         }
 
         if (algo.equals("meanFilter") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage") || algo.equals("ColorFilter") || algo.equals("gaussFilter")){
@@ -63,9 +71,9 @@ public class ApplyAlgorithm {
     public static ResponseEntity<?> checkAlgoParameters(String algo, String p1){
         boolean needParam = true;
         
-        if (algo.equals("Histogram") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage") || algo.equals("gaussFilter")){
+        if (algo.equals("Histogram") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage") || algo.equals("gaussFilter") || algo.equals("solarize") || algo.equals("negative")){
             needParam = false;
-        }else if (algo.equals("Brightness") || algo.equals("ColorFilter") || algo.equals("meanFilter")){
+        }else if (algo.equals("Brightness") || algo.equals("ColorFilter") || algo.equals("meanFilter") || algo.equals("sideGray") || algo.equals("keepColor")){
             needParam = true;
         }else{
             return new ResponseEntity<>("Algorithm " + algo + " doesn't exist.", HttpStatus.BAD_REQUEST);
@@ -77,7 +85,7 @@ public class ApplyAlgorithm {
         if (!needParam && p1 != null){
             return new ResponseEntity<>("one of the parameters mentioned does not exist for the chosen algorithm", HttpStatus.BAD_REQUEST);  
         }
-        if (needParam){
+        if (needParam && !algo.equals("sideGray") && !algo.equals("keepColor")){
             try {
                 Integer.parseInt(p1);
                 }
@@ -97,6 +105,10 @@ public class ApplyAlgorithm {
         algo.add("GrayOutAColorImage");
         algo.add("ColorFilter");
         algo.add("gaussFilter");
+        algo.add("negative");
+        algo.add("sideGray");
+        algo.add("keepColor");
+        algo.add("solarize");
         return algo;
     }
 
@@ -106,7 +118,7 @@ public class ApplyAlgorithm {
         for (String algorithm : algo){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("name",algorithm);
-            if (algorithm.equals("Brightness") || algorithm.equals("meanFilter") || algorithm.equals("ColorFilter")){
+            if (algorithm.equals("Brightness") || algorithm.equals("meanFilter") || algorithm.equals("ColorFilter") || algorithm.equals("sideGray") || algorithm.equals("keepColor")){
                 objectNode.put("hasParameters",true);
             }else{
                 objectNode.put("hasParameters",false);
