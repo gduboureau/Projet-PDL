@@ -150,17 +150,19 @@ function showcategory(element:string){
   if(element == "selectimg"){
     document.getElementById("algo")!.hidden = true;
     document.getElementById("showImgIfClicked")!.hidden = false;
-    document.getElementById("uploadimg")!.hidden = false;
     document.getElementById("slidebar")!.style.height = "calc(90.1vh - 60px)";
     document.getElementById("selectalgo")!.style.opacity = "0.5";
     document.getElementById("selectimg")!.style.opacity = "1";
+    document.getElementById("uploadimg")!.hidden = false;
+    document.getElementById("buttonapply")!.hidden = true;
   }else if(element == "selectalgo"){
     document.getElementById("showImgIfClicked")!.hidden = true;
     document.getElementById("algo")!.hidden = false;
     document.getElementById("slidebar")!.style.height = "90.1vh";
-    document.getElementById("uploadimg")!.hidden = true;
     document.getElementById("selectimg")!.style.opacity = "0.5";
     document.getElementById("selectalgo")!.style.opacity = "1";
+    document.getElementById("uploadimg")!.hidden = true;
+    document.getElementById("buttonapply")!.hidden = false;
   }
 }
 
@@ -215,11 +217,9 @@ function rangeSlide(name: string) {
 
     <nav class="slidebar" id="slidebar">
 
-      <div id="showImgIfClicked">
-        <div class="ParentlistImg">
-          <div class="listImg" v-for="image in imageList" :key="image.id">
-            <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
-          </div>
+      <div class="showImgIfClicked" id="showImgIfClicked">
+        <div class="listImg" v-for="image in imageList" :key="image.id">
+          <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
         </div>
       </div>
 
@@ -246,16 +246,6 @@ function rangeSlide(name: string) {
       </div>
     </nav>
 
-    <nav class="uploadimg" id="uploadimg">
-      <div id="upload">
-        <label class="custom-file-upload">
-          <input type="file" id="file" ref="file" @change="handleFileUpload" />
-          <i class="fa fa-cloud-upload"></i> Ajouter une image
-          <img src="../assets/addimg.png" />
-        </label>
-      </div>
-    </nav>
-
      <nav class="uploadimg" id="uploadimg">
       <label class="buttonupload">
         <input type="file" id="file" ref="file" @change="handleFileUpload"/>
@@ -268,7 +258,7 @@ function rangeSlide(name: string) {
     </nav>
 
     <nav class="option">
-      <button class="buttonapply" @click="showImageWithAlgo">Apply</button>
+      <button class="buttonapply" id="buttonapply" @click="showImageWithAlgo">Apply</button>
     </nav>
     
   </body>
@@ -377,7 +367,7 @@ div.p{
   border-radius: 10px;
 }
 
-.ParentlistImg{
+.showImgIfClicked{
   text-align: center;
 }
 
@@ -406,15 +396,12 @@ div.p{
   margin-top: calc(90.1vh - 60px);
   margin-left: min(-14.7vw,-121px);
   border-right: 1px solid #353948;
+  text-align: center;
+  font-size: 1.7vw;
 }
 
 input[type="file"] {
   display: none;
-}
-
-.uploadimg{
-  text-align: center;
-  font-size: 1.7vw;
 }
 
 .buttonupload {
