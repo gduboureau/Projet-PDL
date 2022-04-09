@@ -34,31 +34,31 @@ public class ApplyAlgorithm {
         }
         else if (algo.equals("Histogram"))
             imageProcessing.HistogramEqualization(image);
-        else if (algo.equals("meanFilter")){
+        else if (algo.equals("MeanFilter")){
             int param1 = Integer.parseInt(p1);
-            imageProcessing.meanFilterWithBorders(image, output, param1, BorderType.NORMALIZED);
+            imageProcessing.MeanFilterWithBorders(image, output, param1, BorderType.NORMALIZED);
         }
-        else if (algo.equals("gradientSobel"))
-            imageProcessing.gradientImageSobel(image,output);
-        else if (algo.equals("GrayOutAColorImage"))
-            imageProcessing.GrayOutAColorImage(image,output);
+        else if (algo.equals("GradientSobel"))
+            imageProcessing.GradientImageSobel(image,output);
+        else if (algo.equals("ColorToGray"))
+            imageProcessing.ColorToGray(image,output);
         else if (algo.equals("ColorFilter")){
             int param1 = Integer.parseInt(p1);
             imageProcessing.ColorFilter(image,output,param1);
-        }else if (algo.equals("gaussFilter")){
+        }else if (algo.equals("GaussFilter")){
             int kernel[][] = { { 1, 2, 3, 2, 1 }, { 2, 6, 8, 6, 2 }, { 3, 8, 10, 8, 3 }, { 2, 6, 8, 6, 2 }, { 1, 2, 3, 2, 1 } };
-            imageProcessing.convolution(image, output, kernel);
-        }else if (algo.equals("solarize")){
-            imageProcessing.solarize(image);
-        }else if (algo.equals("negative")){
-            imageProcessing.negative(image);
-        }else if (algo.equals("sideGray")){
-            imageProcessing.sideGray(image, p1);
-        }else if (algo.equals("keepColor")){
-            imageProcessing.keepColor(image,p1);
+            imageProcessing.Convolution(image, output, kernel);
+        }else if (algo.equals("Solarize")){
+            imageProcessing.Solarize(image);
+        }else if (algo.equals("Negative")){
+            imageProcessing.Negative(image);
+        }else if (algo.equals("SideGray")){
+            imageProcessing.SideGray(image, p1);
+        }else if (algo.equals("KeepColor")){
+            imageProcessing.KeepColor(image,p1);
         }
 
-        if (algo.equals("meanFilter") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage") || algo.equals("ColorFilter") || algo.equals("gaussFilter")){
+        if (algo.equals("MeanFilter") || algo.equals("GradientSobel") || algo.equals("ColorToGray") || algo.equals("ColorFilter") || algo.equals("GaussFilter")){
             img.get().setData(PlanarImageConverter.PlanarImageToBytes(output));
         }else{
             img.get().setData(PlanarImageConverter.PlanarImageToBytes(image));
@@ -71,9 +71,9 @@ public class ApplyAlgorithm {
     public static ResponseEntity<?> checkAlgoParameters(String algo, String p1){
         boolean needParam = true;
         
-        if (algo.equals("Histogram") || algo.equals("gradientSobel") || algo.equals("GrayOutAColorImage") || algo.equals("gaussFilter") || algo.equals("solarize") || algo.equals("negative")){
+        if (algo.equals("Histogram") || algo.equals("GradientSobel") || algo.equals("ColorToGray") || algo.equals("GaussFilter") || algo.equals("Solarize") || algo.equals("Negative")){
             needParam = false;
-        }else if (algo.equals("Brightness") || algo.equals("ColorFilter") || algo.equals("meanFilter") || algo.equals("sideGray") || algo.equals("keepColor")){
+        }else if (algo.equals("Brightness") || algo.equals("ColorFilter") || algo.equals("MeanFilter") || algo.equals("SideGray") || algo.equals("KeepColor")){
             needParam = true;
         }else{
             return new ResponseEntity<>("Algorithm " + algo + " doesn't exist.", HttpStatus.BAD_REQUEST);
@@ -85,7 +85,7 @@ public class ApplyAlgorithm {
         if (!needParam && p1 != null){
             return new ResponseEntity<>("one of the parameters mentioned does not exist for the chosen algorithm", HttpStatus.BAD_REQUEST);  
         }
-        if (needParam && !algo.equals("sideGray") && !algo.equals("keepColor")){
+        if (needParam && !algo.equals("SideGray") && !algo.equals("KeepColor")){
             try {
                 Integer.parseInt(p1);
                 }
@@ -100,15 +100,15 @@ public class ApplyAlgorithm {
         List<String> algo = new ArrayList<String>();
         algo.add("Brightness");
         algo.add("Histogram");
-        algo.add("meanFilter");
-        algo.add("gradientSobel");
-        algo.add("GrayOutAColorImage");
+        algo.add("MeanFilter");
+        algo.add("GradientSobel");
+        algo.add("ColorToGray");
         algo.add("ColorFilter");
-        algo.add("gaussFilter");
-        algo.add("negative");
-        algo.add("sideGray");
-        algo.add("keepColor");
-        algo.add("solarize");
+        algo.add("GaussFilter");
+        algo.add("Negative");
+        algo.add("SideGray");
+        algo.add("KeepColor");
+        algo.add("Solarize");
         return algo;
     }
 
@@ -118,7 +118,7 @@ public class ApplyAlgorithm {
         for (String algorithm : algo){
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("name",algorithm);
-            if (algorithm.equals("Brightness") || algorithm.equals("meanFilter") || algorithm.equals("ColorFilter") || algorithm.equals("sideGray") || algorithm.equals("keepColor")){
+            if (algorithm.equals("Brightness") || algorithm.equals("MeanFilter") || algorithm.equals("ColorFilter") || algorithm.equals("SideGray") || algorithm.equals("KeepColor")){
                 objectNode.put("hasParameters",true);
             }else{
                 objectNode.put("hasParameters",false);

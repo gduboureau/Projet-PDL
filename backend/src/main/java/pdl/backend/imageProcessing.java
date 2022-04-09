@@ -138,7 +138,7 @@ public class imageProcessing {
    *
    * The input image is not modified.
    */
-  public static void meanFilterWithBorders(
+  public static void MeanFilterWithBorders(
     Planar<GrayU8> image,
     Planar<GrayU8> output,
     int size,
@@ -209,7 +209,7 @@ public class imageProcessing {
    *
    * The input image is not modified.
    */
-  public static void convolution(
+  public static void Convolution(
     Planar<GrayU8> image,
     Planar<GrayU8> output,
     int[][] kernel
@@ -244,12 +244,12 @@ public class imageProcessing {
    * @param output : a copy of the input image where the filter is going to be
    * applied
    */
-  public static void gradientImageSobel(
+  public static void GradientImageSobel(
     Planar<GrayU8> image,
     Planar<GrayU8> output
   ) {
     if (image.imageType.numBands == 3) {
-      GrayOutAColorImage(image, output);
+      ColorToGray(image, output);
     }
     int h1[][] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
     int h2[][] = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
@@ -288,7 +288,7 @@ public class imageProcessing {
    *
    * The input image is not modified.
    */
-  public static void GrayOutAColorImage(
+  public static void ColorToGray(
     Planar<GrayU8> image,
     Planar<GrayU8> output
   ) {
@@ -438,7 +438,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void negative(Planar<GrayU8> image) {
+  public static void Negative(Planar<GrayU8> image) {
     boolean isInColor = (image.getNumBands() == 3);
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
@@ -511,7 +511,7 @@ public class imageProcessing {
     }
   }
 
-  public static void sideGray(Planar<GrayU8> image, String side){
+  public static void SideGray(Planar<GrayU8> image, String side){
     if (side.equals("right")){
       rightGray(image);
     }else if(side.equals("left")){
@@ -525,7 +525,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepRed(Planar<GrayU8> image) {
+  public static void KeepRed(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -550,7 +550,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepGreen(Planar<GrayU8> image) {
+  public static void KeepGreen(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -575,7 +575,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepBlue(Planar<GrayU8> image) {
+  public static void KeepBlue(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -600,7 +600,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepYellow(Planar<GrayU8> image) {
+  public static void KeepYellow(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -625,7 +625,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepOrange(Planar<GrayU8> image) {
+  public static void KeepOrange(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -650,7 +650,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepPurple(Planar<GrayU8> image) {
+  public static void KeepPurple(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -675,7 +675,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepHot(Planar<GrayU8> image) {
+  public static void KeepHot(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -700,7 +700,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void keepCold(Planar<GrayU8> image) {
+  public static void KeepCold(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };
@@ -719,23 +719,23 @@ public class imageProcessing {
     }
   }
 
-  public static void keepColor(Planar<GrayU8> image, String color){
+  public static void KeepColor(Planar<GrayU8> image, String color){
     if (color == "red"){
-      keepRed(image);
+      KeepRed(image);
     }else if (color.equals("blue")){
-      keepBlue(image);
+      KeepBlue(image);
     }else if (color.equals("purple")){
-      keepPurple(image);
+      KeepPurple(image);
     }else if (color.equals("cold")){
-      keepCold(image);
+      KeepCold(image);
     }else if (color.equals("hot")){
-      keepHot(image);
+      KeepHot(image);
     }else if (color.equals("orange")){
-      keepOrange(image);
+      KeepOrange(image);
     }else if (color.equals("green")){
-      keepGreen(image);
+      KeepGreen(image);
     }else if (color.equals("yellow")){
-      keepYellow(image);
+      KeepYellow(image);
     }
   }
   
@@ -745,7 +745,7 @@ public class imageProcessing {
    * @param image : the original image
    */
 
-  public static void solarize(Planar<GrayU8> image) {
+  public static void Solarize(Planar<GrayU8> image) {
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         int rgb[] = { 0, 0, 0 };

@@ -324,21 +324,17 @@ body{
 }
 
 div.c{
-  position: relative;
-  margin-left:2em;
+  /* position: relative; */
+  margin-left: max(calc(5vw - 22px), 18px);
 }
 .algorithmsname{
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
   opacity:0;
-  visibility: 0;
 }
 
 .inputlabel{
   cursor: pointer;
-  position: relative;
+  /* position: relative; */
+  font-size: max(1vw, 12px);
 }
 
 h1{
@@ -358,17 +354,18 @@ h1{
 }
 
 .rangeValue {
-  position: relative;
-  display: block;
-  margin-left: 70px;
-  font-size: 1em;
+  /* position: relative; */
+  /* display: block; */
+  margin-left: max(4vw,35px);
+  font-size: max(calc(2.8vw - 30px),11px);
   color: #999;
   font-weight: 400;
 }
 
 .rangeParamValue{
-  width: 150px;
-  height: 12px;
+  width: 8vw;
+  min-width: 75px;
+  height: 10px;
   -webkit-appearance: none;
   background: rgba(17, 17, 17, 0.501);
   outline: none;
@@ -507,13 +504,16 @@ input[type="file"] {
   letter-spacing: 1.5px;
   cursor: pointer;
   box-shadow: inset 0 0 0 0 #353948;
-  -webkit-transition: ease-out 0.5s;
-  -moz-transition: ease-out 0.5s;
-  transition: ease-out 0.5s;
+  -webkit-transition: ease-out 0.2s;
+  -moz-transition: ease-out 0.2s;
+  transition: ease-out 0.2s;
 }
 
 .buttonapply:hover {
   box-shadow: inset 100px 0 0 0 #353948;
+  -webkit-transition: ease-out 0.4s;
+  -moz-transition: ease-out 0.4s;
+  transition: ease-out 0.4s;
 }
 
 </style>
