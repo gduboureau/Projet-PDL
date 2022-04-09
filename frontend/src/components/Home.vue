@@ -17,24 +17,6 @@ const side = ref("");
 getImageList();
 getAlgoList();
 
-function submitFile() {
-  if (target.value !== null && target.value !== undefined && target.value.files !== null) {
-    const file = target.value.files[0];
-    if (file === undefined)
-      return;
-    let formData = new FormData();
-    formData.append("file", file);
-    api.createImage(formData).then(() => {
-      if (target.value !== undefined)
-        target.value.value = '';
-    }).catch(e => {
-      console.log(e.message);
-      alert("Error: 415 Unsupported Media Type");
-    });
-  }
-  location.reload();
-}
-
 async function handleFileUpload(event: Event) {
   target.value = (event.target as HTMLInputElement);
   if (target.value !== null && target.value !== undefined && target.value.files !== null) {
@@ -51,7 +33,7 @@ async function handleFileUpload(event: Event) {
       alert("Error: 415 Unsupported Media Type");
     });
   }
-  location.reload();
+  getImageList();
 }
 
 function getAlgoList() {
@@ -73,7 +55,14 @@ function getImageList() {
 
 function showImage(id:number) {
   CurrentId.value = id;
-  document.getElementById("createImage")!.setAttribute("src", "images/" + id);
+  api.getImage(id).then((data: Blob) => {
+    const reader = new window.FileReader();
+    reader.readAsDataURL(data);
+    reader.onload = () => {
+      document.getElementById("createImage")!.setAttribute("src", reader.result as string);
+    };
+  });
+  // document.getElementById("createImage")!.setAttribute("src", "images/" + id);
 }
 
 async function applyAlgo(prop: number,name: String,parameter: String): Promise<Blob> {
@@ -87,14 +76,13 @@ async function deleteImage(): Promise<void> {
 
 
 async function showImageWithAlgo() {
+  if (CurrentId.value == -1){
+    alert("Please choose an Image");
+  }
   if (selectAlgo.value != "" && CurrentId.value != -1){
     const val = ref("");
     if (selectAlgo.value == "ColorFilter" || selectAlgo.value == "meanFilter" || selectAlgo.value == "Brightness"){
       val.value = "&p1=" + (document.getElementById('range' +selectAlgo.value) as HTMLInputElement).value;
-    }else if(selectAlgo.value == "sideGray"){
-      val.value = "&p1=" + side.value;
-    }else if(selectAlgo.value == "keepColor"){
-      val.value = "&p1=" + color.value;
     }else{
       val.value = "";
     }
@@ -102,21 +90,22 @@ async function showImageWithAlgo() {
     await applyAlgo(CurrentId.value, selectAlgo.value, val.value);
     document!.getElementById("wait")!.hidden = true;
     document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value);
+    document.getElementById("Imginlist-"+CurrentId.value)!.setAttribute("src", "/images/" + CurrentId.value + "?algorithm=" + selectAlgo.value + val.value);
   }
 }
 
 
 function resetAlgoPanel(){
   for (let i = 0; i < algoList.value.length; i++){
-    document.getElementById("name"+algoList.value[i].name).style.opacity = "0.5";
-    document.getElementById("showParam"+algoList.value[i].name).setAttribute("style","max-height:0px");
+    document.getElementById("name"+algoList.value[i].name)!.style.opacity = "0.5";
+    document.getElementById("showParam"+algoList.value[i].name)!.setAttribute("style","max-height:0px");
     selectAlgo.value = "";
     if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
       (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
       if (algoList.value[i].name == "meanFilter"){
-        document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "1";
+        document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "1";
       }else{
-        document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+        document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "0";
       }
     }
   }
@@ -134,7 +123,6 @@ function resetAlgoPanel(){
 
 function showcategory(element:string){
   if(element == "selectimg"){
-    resetAlgoPanel();
     document.getElementById("algo")!.hidden = true;
     document.getElementById("showImgIfClicked")!.hidden = false;
     document.getElementById("slidebar")!.style.height = "calc(90.1vh - 60px)";
@@ -142,6 +130,7 @@ function showcategory(element:string){
     document.getElementById("selectimg")!.style.opacity = "1";
     document.getElementById("uploadimg")!.hidden = false;
     document.getElementById("buttonapply")!.hidden = true;
+    resetAlgoPanel();
   }else if(element == "selectalgo"){
     document.getElementById("showImgIfClicked")!.hidden = true;
     document.getElementById("algo")!.hidden = false;
@@ -155,22 +144,22 @@ function showcategory(element:string){
 
 function selectedAlgo(name: string){
   if (selectAlgo.value == name){
-    document.getElementById("name"+name).style.opacity = "0.5";
-    document.getElementById("showParam"+name).setAttribute("style","max-height:0px");
+    document.getElementById("name"+name)!.style.opacity = "0.5";
+    document.getElementById("showParam"+name)!.setAttribute("style","max-height:0px");
     selectAlgo.value = "";
     return;
   } 
   selectAlgo.value = name;
   for (let i = 0; i < algoList.value.length; i++){
     if (name != algoList.value[i].name){
-      document.getElementById("name"+algoList.value[i].name).style.opacity = "0.5";
-      document.getElementById("showParam"+algoList.value[i].name).setAttribute("style","max-height:0px");
+      document.getElementById("name"+algoList.value[i].name)!.style.opacity = "0.5";
+      document.getElementById("showParam"+algoList.value[i].name)!.setAttribute("style","max-height:0px");
       if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
         (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
         if (algoList.value[i].name == "meanFilter"){
-          document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "1";
+          document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "1";
         }else{
-          document.getElementById('rangeValue'+algoList.value[i].name).innerHTML = "0";
+          document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "0";
         }
       }
       if (algoList.value[i].name == "sideGray"){
@@ -190,8 +179,8 @@ function selectedAlgo(name: string){
     }
   }
 
-  document.getElementById("name"+name).style.opacity = "1";
-  document.getElementById("showParam"+name).setAttribute("style","max-height:200px")
+  document.getElementById("name"+name)!.style.opacity = "1";
+  document.getElementById("showParam"+name)!.setAttribute("style","max-height:200px")
   var slider = document.getElementById("range"+name) as HTMLInputElement;
   if (name == "ColorFilter"){
     slider.setAttribute("min","0");
@@ -232,7 +221,7 @@ function rangeSlide(name: string) {
 
       <div class="showImgIfClicked" id="showImgIfClicked">
         <div class="listImg" v-for="image in imageList" :key="image.id">
-          <img class="Imginlist" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
+          <img class="Imginlist" :id="`Imginlist-` + image.id" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
         </div>
       </div>
 
@@ -287,7 +276,7 @@ function rangeSlide(name: string) {
     </nav>
 
     <nav class="option">
-      <button class="buttonapply" id="buttonapply" @click="showImageWithAlgo">Apply</button>
+      <button class="buttonapply" id="buttonapply" @click="showImageWithAlgo" hidden>Apply</button>
     </nav>
     
   </body>
@@ -319,7 +308,7 @@ body{
   min-width: 20px;
   margin-top: 4vh;
   margin-left: max(calc(0.4vw - 4px),-1px);
-  opacity: 0.5;
+  opacity: 1;
   transition: 0.3s;
   cursor: pointer;
 }
