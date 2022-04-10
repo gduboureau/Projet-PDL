@@ -188,23 +188,24 @@ function selectedAlgo(name: string){
       }
     }
   }
-
   document.getElementById("name"+name)!.style.opacity = "1";
-  document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
   var slider = document.getElementById("range"+name) as HTMLInputElement;
   if (name == "ColorFilter"){
     slider.setAttribute("min","0");
     slider.setAttribute("max","359");
     slider.defaultValue = "0";
     document.getElementById('rangeValue'+name)!.innerHTML = "0";
+    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
   }else if(name == "MeanFilter"){
     slider.setAttribute("min","1");
     slider.setAttribute("max","20");
     slider.defaultValue = "1";
     document.getElementById('rangeValue'+name)!.innerHTML = "0";
+    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
   }else if (name == "Brightness"){
     slider.defaultValue = "0";
     document.getElementById('rangeValue'+name)!.innerHTML = "0";
+    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
   }
 }
 
