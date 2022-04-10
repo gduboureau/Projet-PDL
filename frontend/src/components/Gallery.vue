@@ -93,8 +93,8 @@ function Slide(index: number) {
 
 <style scoped>
 
-img {
-  height: 85vh;
+.large-img img {
+  height: 75vh;
 }
 
 .gallery-display {
@@ -149,8 +149,8 @@ img {
   right: 6.5vw;
 }
 .download img {
+  min-width: 12px;
   width: 1.7vw;
-  height: 1.7vw;
 }
 
 .close {
@@ -158,8 +158,8 @@ img {
   right: 3vw;
 }
 .close img {
+  min-width: 10px;
   width: 1.5vw;
-  height: 1.5vw;
 }
 
 .arrow {
