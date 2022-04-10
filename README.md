@@ -1,6 +1,6 @@
 # Projet PDL
 
-Ce dépôt correspond au rendu final du projet PDL du vendredi 25 mars 2022.
+Ce dépôt correspond au rendu final du projet PDL du dimanche 10 avril 2022.
 
 ## Auteurs
 
