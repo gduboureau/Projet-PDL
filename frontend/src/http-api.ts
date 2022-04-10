@@ -6,7 +6,7 @@ import { request } from 'http';
 
 const instance = axios.create({
   baseURL: "/",
-  timeout: 15000,
+  timeout: 40000,
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
