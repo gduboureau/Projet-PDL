@@ -5,6 +5,7 @@ import { ImageType } from "../image";
 import { AlgoTypes } from "../algorithms";
 
 const CurrentId = ref(-1);
+const srcImage = ref("");
 const imageList = ref<ImageType[]>([]);
 const selectAlgo = ref("");
 const algoList = ref<AlgoTypes[]>([]);
@@ -62,7 +63,8 @@ function showImage(id:number) {
       document.getElementById("Displayerinfo")!.hidden = true;
       document.getElementById("createImage")!.hidden = false;
       document.getElementById("buttondelete")!.hidden = false;
-      document.getElementById("createImage")!.setAttribute("src", reader.result as string);
+      srcImage.value = reader.result as string
+      // document.getElementById("createImage")!.setAttribute("src", reader.result as string);
     };
   });
 }
@@ -72,7 +74,7 @@ async function applyAlgo(prop: number,name: String,parameter: String): Promise<B
 }
 
 async function deleteImage(): Promise<void> {
-  document.getElementById("createImage")!.hidden = true
+  document.getElementById("createImage")!.hidden = true;
   document.getElementById("Displayerinfo")!.hidden = false;
   document.getElementById("buttondelete")!.hidden = true;
   await api.deleteImage(CurrentId.value);
@@ -97,7 +99,8 @@ async function showImageWithAlgo() {
     }
     document.getElementById("wait")!.setAttribute("style","z-index:4");
     await applyAlgo(CurrentId.value, selectAlgo.value, val.value);
-    document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value);
+    srcImage.value = "images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value;
+    // document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value);
     document.getElementById("Imginlist-"+CurrentId.value)!.setAttribute("src", "/images/" + CurrentId.value + "?algorithm=" + selectAlgo.value + val.value);
     await new Promise(r => setTimeout(r, 3000));
     document.getElementById("wait")!.setAttribute("style","z-index:-1");
@@ -300,7 +303,7 @@ function setSide(selectSide: string){
 
     <nav class="Imgdisplayer">
       <label class="Displayerinfo" id="Displayerinfo">Please select an Image</label>
-      <img id="createImage" />
+      <img id="createImage" :src="srcImage"/>
     </nav>
 
     <nav class="option">
