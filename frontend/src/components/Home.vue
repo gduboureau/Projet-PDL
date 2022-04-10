@@ -81,8 +81,12 @@ async function showImageWithAlgo() {
   }
   if (selectAlgo.value != "" && CurrentId.value != -1){
     const val = ref("");
-    if (selectAlgo.value == "ColorFilter" || selectAlgo.value == "meanFilter" || selectAlgo.value == "Brightness"){
+    if (selectAlgo.value == "ColorFilter" || selectAlgo.value == "MeanFilter" || selectAlgo.value == "Brightness"){
       val.value = "&p1=" + (document.getElementById('range' +selectAlgo.value) as HTMLInputElement).value;
+    }else if (selectAlgo.value == "SideGray"){
+      val.value = "&p1=" + side.value;
+    }else if (selectAlgo.value == "KeepColor"){
+      val.value = "&p1=" + color.value;
     }else{
       val.value = "";
     }
@@ -100,9 +104,9 @@ function resetAlgoPanel(){
     document.getElementById("name"+algoList.value[i].name)!.style.opacity = "0.5";
     document.getElementById("showParam"+algoList.value[i].name)!.setAttribute("style","max-height:0px");
     selectAlgo.value = "";
-    if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
+    if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "MeanFilter") {
       (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
-      if (algoList.value[i].name == "meanFilter"){
+      if (algoList.value[i].name == "MeanFilter"){
         document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "1";
       }else{
         document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "0";
@@ -154,22 +158,22 @@ function selectedAlgo(name: string){
     if (name != algoList.value[i].name){
       document.getElementById("name"+algoList.value[i].name)!.style.opacity = "0.5";
       document.getElementById("showParam"+algoList.value[i].name)!.setAttribute("style","max-height:0px");
-      if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "meanFilter") {
+      if (algoList.value[i].name == "Brightness" || algoList.value[i].name == "ColorFilter" || algoList.value[i].name == "MeanFilter") {
         (document.getElementById("range"+algoList.value[i].name) as HTMLInputElement).value = "0";
-        if (algoList.value[i].name == "meanFilter"){
+        if (algoList.value[i].name == "MeanFilter"){
           document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "1";
         }else{
           document.getElementById('rangeValue'+algoList.value[i].name)!.innerHTML = "0";
         }
       }
-      if (algoList.value[i].name == "sideGray"){
+      if (algoList.value[i].name == "SideGray"){
       for(let j = 0; j < sideList.length; j++){
         if ((document.getElementById("sideParam"+sideList[j]) as HTMLInputElement).checked == true){
           (document.getElementById("sideParam"+sideList[j]) as HTMLInputElement).checked = false;
           }
         }
       }
-      if (algoList.value[i].name == "keepColor"){
+      if (algoList.value[i].name == "KeepColor"){
         for(let j = 0; j < listColor.length; j++){
           if ((document.getElementById("colorParam"+listColor[j]) as HTMLInputElement).checked == true){
             (document.getElementById("colorParam"+listColor[j]) as HTMLInputElement).checked = false;
@@ -180,24 +184,35 @@ function selectedAlgo(name: string){
   }
 
   document.getElementById("name"+name)!.style.opacity = "1";
-  document.getElementById("showParam"+name)!.setAttribute("style","max-height:200px")
+  document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
   var slider = document.getElementById("range"+name) as HTMLInputElement;
   if (name == "ColorFilter"){
     slider.setAttribute("min","0");
-    slider.setAttribute("max","360");
+    slider.setAttribute("max","359");
     slider.defaultValue = "0";
-  }else if(name == "meanFilter"){
+    document.getElementById('rangeValue'+name)!.innerHTML = "0";
+  }else if(name == "MeanFilter"){
     slider.setAttribute("min","1");
     slider.setAttribute("max","20");
     slider.defaultValue = "1";
+    document.getElementById('rangeValue'+name)!.innerHTML = "0";
   }else if (name == "Brightness"){
     slider.defaultValue = "0";
+    document.getElementById('rangeValue'+name)!.innerHTML = "0";
   }
 }
 
 function rangeSlide(name: string) {
   const val = (document.getElementById('range' +name) as HTMLInputElement).value;
   document.getElementById('rangeValue'+name)!.innerHTML = val;
+} 
+
+function setColor(selectedColor: string){
+  color.value = selectedColor;
+}
+
+function setSide(selectSide: string){
+  side.value = selectSide;
 }
 
 </script>
@@ -237,25 +252,27 @@ function rangeSlide(name: string) {
                 </label>
               </h1>
               <div class="showParam" :id="`showParam`+algo.name">
-                <div v-if="algo.name == `Brightness` || algo.name == `ColorFilter` || algo.name == `meanFilter`">
+                <div v-if="algo.name == `Brightness` || algo.name == `ColorFilter` || algo.name == `MeanFilter`">
                   <span class="rangeValue" :id="`rangeValue`+algo.name"></span>
-                  <input class="rangeParamValue" :id="`range` + algo.name" type="range" min="-255" max="255" v-on:Change="rangeSlide(algo.name)"> 
+                  <input class="rangeParamValue" :id="`range` + algo.name" type="range" min="-110" max="110" v-on:Change="rangeSlide(algo.name)"> 
                 </div>
-                <div v-if="algo.name == `keepColor`">
+                <div class="radio-toolbar">
+                <div v-if="algo.name == `KeepColor`">
                   <div v-for="colors in listColor" :key="colors">
-                    <input type="radio" class="colorParam" :id="`colorParam` + colors" name="colorParameters" @click="color = colors">
-                    <label class="color" :for="`colorParam` + side">
+                    <input type="radio" name="colorParam" :id="`colorParam` + colors" @click="setColor(colors)">
+                    <label class="color" :for="`colorParam` + colors">
                       {{colors}}
                     </label>
                   </div>
                 </div>
-                <div class="divSides" v-if="algo.name == `sideGray`">
+                <div class="divSides" v-if="algo.name == `SideGray`">
                   <div v-for="sides in sideList" :key="sides">
-                    <input type="radio" name="sideParameters" :id="`sideParam` + sides" @click="side = sides">
+                    <input type="radio" name="sideParameters" :id="`sideParam` + sides" @click="setSide(sides)">
                     <label class="sideParam" :for="`sideParam` + sides">
                       {{sides}}
                     </label>
                   </div>
+                </div>
                 </div>
               </div>
             </div>
@@ -382,6 +399,30 @@ h1{
   cursor: pointer;
   border: 2px solid rgba(52, 52, 52, 0.496);
   box-shadow: -407px 0 0 400px #90b5db65;
+}
+
+.radio-toolbar {
+  margin: 10px;
+}
+
+.radio-toolbar input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.radio-toolbar label {
+  display: inline-block;
+  background-color: #6e6e6e;
+  padding: 5px 10px;
+  border: 2px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgb(255, 255, 255);;
+}
+
+.radio-toolbar input[type="radio"]:checked + label {
+  background-color:rgba(69, 67, 68, 0.525);
 }
 
 
