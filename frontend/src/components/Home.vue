@@ -59,10 +59,12 @@ function showImage(id:number) {
     const reader = new window.FileReader();
     reader.readAsDataURL(data);
     reader.onload = () => {
+      document.getElementById("Displayerinfo")!.hidden = true;
+      document.getElementById("createImage")!.hidden = false;
+      document.getElementById("buttondelete")!.hidden = false;
       document.getElementById("createImage")!.setAttribute("src", reader.result as string);
     };
   });
-  // document.getElementById("createImage")!.setAttribute("src", "images/" + id);
 }
 
 async function applyAlgo(prop: number,name: String,parameter: String): Promise<Blob> {
@@ -70,8 +72,11 @@ async function applyAlgo(prop: number,name: String,parameter: String): Promise<B
 }
 
 async function deleteImage(): Promise<void> {
+  document.getElementById("createImage")!.hidden = true
+  document.getElementById("Displayerinfo")!.hidden = false;
+  document.getElementById("buttondelete")!.hidden = true;
   await api.deleteImage(CurrentId.value);
-  location.reload();
+  getImageList()
 }
 
 
@@ -272,11 +277,20 @@ function rangeSlide(name: string) {
     </nav>
 
     <nav class="Imgdisplayer">
+      <label class="Displayerinfo" id="Displayerinfo">Please select an Image</label>
       <img id="createImage" />
     </nav>
 
     <nav class="option">
-      <button class="buttonapply" id="buttonapply" @click="showImageWithAlgo" hidden>Apply</button>
+      <div class="delete">
+        <button class="buttondelete" id="buttondelete" @click="deleteImage" hidden>
+        <img src="../assets/delete.png"/>
+          Delete
+        </button>
+      </div>
+      <div class ="apply">
+        <button class="buttonapply" id="buttonapply" @click="showImageWithAlgo" hidden>Apply</button>
+      </div>
     </nav>
     
   </body>
@@ -324,7 +338,6 @@ body{
 }
 
 div.c{
-  /* position: relative; */
   margin-left: max(calc(5vw - 22px), 18px);
 }
 .algorithmsname{
@@ -333,7 +346,6 @@ div.c{
 
 .inputlabel{
   cursor: pointer;
-  /* position: relative; */
   font-size: max(1vw, 12px);
 }
 
@@ -354,8 +366,8 @@ h1{
 }
 
 .rangeValue {
-  /* position: relative; */
-  /* display: block; */
+  position: relative;
+  display: block;
   margin-left: max(4vw,35px);
   font-size: max(calc(2.8vw - 30px),11px);
   color: #999;
@@ -478,6 +490,14 @@ input[type="file"] {
   align-items: center;
 }
 
+.Displayerinfo{
+  background: rgba(255, 255, 255, 0.025);
+  color: rgb(114, 114, 114);
+  border-radius: 30px;
+  padding: max(1vw,10px);
+  font-size: max(1.5vw,15px);
+}
+
 .Imgdisplayer img{
   max-height: calc(75vh - 50px);
   min-height: 20px;
@@ -493,27 +513,61 @@ input[type="file"] {
   border-top: 1px solid #353948;
 }
 
-.buttonapply {
+.delete{
+  position: absolute;
+  margin-top: 10px;
+  margin-left: max(calc(6vw - 30px),10px);
+}
+
+.buttondelete{
+  color: rgba(255, 255, 255, 0.678);
+  background: #1C1D26;
+  border: 2px solid #353948;
+  padding: 10px 10px;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #353948;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
+}
+
+.buttondelete:hover {
+  box-shadow: inset 100px 0 0 0 #353948;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
+}
+
+.buttondelete img{
+  width: 10.5px;
+}
+
+.apply{
   margin-left: max(calc(80vw - 150px), 55vw);
+}
+
+.buttonapply {
   margin-top: 10px;
   color: rgba(255, 255, 255, 0.678);
   background: #1C1D26;
   border: 2px solid #353948;
   padding: 10px 10px;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 1.5px;
   cursor: pointer;
   box-shadow: inset 0 0 0 0 #353948;
-  -webkit-transition: ease-out 0.2s;
-  -moz-transition: ease-out 0.2s;
-  transition: ease-out 0.2s;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
 }
 
 .buttonapply:hover {
   box-shadow: inset 100px 0 0 0 #353948;
-  -webkit-transition: ease-out 0.4s;
-  -moz-transition: ease-out 0.4s;
-  transition: ease-out 0.4s;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
 }
 
 </style>
