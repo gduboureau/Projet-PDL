@@ -455,9 +455,10 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
   de cliquer dessus pour les afficher en plus grande. En dessous des images, nous pouvons choisir d'importer nos propres images via un bouton
   upload. L'importation d'une image se fait directement et la modification est appliquée en temps réel.
   \item Sur le panneau des algorithmes, tous les noms des algorithmes sont affichés. Nous pouvons cliquer dessus ce qui a pour effet de selectionner
-  l'algorithme voulu. Les algorithmes nécessitant des paramètres "entier" se déroule pour afficher une barre "slide" pour selectionné la valeur.
+  l'algorithme voulu. Les algorithmes nécessitant des paramètres "entier" se déroule pour afficher une barre "slide" pour selectionner la valeur.
   Pour les autres, ce sont des cases à sélectionner.
-  Nous ne pouvons appliquer l'algorithme que si l'image est selectionnée et si on se trouve dans le menu des algorithmes.
+  Nous ne pouvons appliquer l'algorithme que si l'image est selectionnée (popup-alert sinon) et si on se trouve dans le menu des algorithmes.
+  Si nous essayons d'appliquer un algorithme sans l'avoir selectionné, un popup-alert avertira le client.
   \end{itemize}
   }
 {}
@@ -467,6 +468,7 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
 {Panneau de droite}
 {
   Le panneau de droite permet d'afficher l'image lorsqu'elle a été selectionnée dans le menu des images de gauche.
+  Par défaut, une étiquette indiquant au client de selectionner une image est affichée.
 }
 {}
 {}
