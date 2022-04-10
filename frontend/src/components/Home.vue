@@ -5,6 +5,7 @@ import { ImageType } from "../image";
 import { AlgoTypes } from "../algorithms";
 
 const CurrentId = ref(-1);
+const CurrentName = ref("")
 const srcImage = ref("");
 const imageList = ref<ImageType[]>([]);
 const selectAlgo = ref("");
@@ -54,8 +55,9 @@ function getImageList() {
   });
 }
 
-function showImage(id:number) {
+function showImage(id:number, name:string) {
   CurrentId.value = id;
+  CurrentName.value = name
   api.getImage(id).then((data: Blob) => {
     const reader = new window.FileReader();
     reader.readAsDataURL(data);
@@ -63,8 +65,8 @@ function showImage(id:number) {
       document.getElementById("Displayerinfo")!.hidden = true;
       document.getElementById("createImage")!.hidden = false;
       document.getElementById("buttondelete")!.hidden = false;
+      document.getElementById("buttondownload")!.hidden = false;
       srcImage.value = reader.result as string
-      // document.getElementById("createImage")!.setAttribute("src", reader.result as string);
     };
   });
 }
@@ -77,6 +79,7 @@ async function deleteImage(): Promise<void> {
   document.getElementById("createImage")!.hidden = true;
   document.getElementById("Displayerinfo")!.hidden = false;
   document.getElementById("buttondelete")!.hidden = true;
+  document.getElementById("buttondownload")!.hidden = true;
   await api.deleteImage(CurrentId.value);
   getImageList()
 }
@@ -100,7 +103,6 @@ async function showImageWithAlgo() {
     document.getElementById("wait")!.setAttribute("style","z-index:4");
     await applyAlgo(CurrentId.value, selectAlgo.value, val.value);
     srcImage.value = "images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value;
-    // document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value);
     document.getElementById("Imginlist-"+CurrentId.value)!.setAttribute("src", "/images/" + CurrentId.value + "?algorithm=" + selectAlgo.value + val.value);
     await new Promise(r => setTimeout(r, 3000));
     document.getElementById("wait")!.setAttribute("style","z-index:-1");
@@ -246,7 +248,7 @@ function setSide(selectSide: string){
 
       <div class="showImgIfClicked" id="showImgIfClicked">
         <div class="listImg" v-for="image in imageList" :key="image.id">
-          <img class="Imginlist" :id="`Imginlist-` + image.id" :src="`/images/`+ image.id" v-on:click="showImage(image.id)"/>
+          <img class="Imginlist" :id="`Imginlist-` + image.id" :src="`/images/`+ image.id" v-on:click="showImage(image.id, image.name)"/>
         </div>
       </div>
 
@@ -308,14 +310,22 @@ function setSide(selectSide: string){
     </nav>
 
     <nav class="option">
+      <div class ="apply">
+        <button class="buttonapply" id="buttonapply" @click="showImageWithAlgo" hidden>Apply</button>
+      </div>
+      <div class="download">
+        <a :href="`/images/` + CurrentId" :download="CurrentName">
+          <button class="buttondownload" id="buttondownload" hidden>
+            <img src="../assets/download.png"/>
+            Download
+          </button>
+        </a>
+      </div>
       <div class="delete">
         <button class="buttondelete" id="buttondelete" @click="deleteImage" hidden>
         <img src="../assets/delete.png"/>
           Delete
         </button>
-      </div>
-      <div class ="apply">
-        <button class="buttonapply" id="buttonapply" @click="showImageWithAlgo" hidden>Apply</button>
       </div>
     </nav>
     
@@ -619,10 +629,66 @@ input[type="file"] {
   border-top: 1px solid #353948;
 }
 
-.delete{
+.apply{
   position: absolute;
-  margin-top: 10px;
   margin-left: max(calc(6vw - 30px),10px);
+}
+
+.buttonapply {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.678);
+  background: #1C1D26;
+  border: 2px solid #353948;
+  padding: 10px 10px;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #353948;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
+}
+
+.buttonapply:hover {
+  box-shadow: inset 100px 0 0 0 #353948;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
+}
+
+.download{
+  margin-top: 10px;
+  margin-left: calc(75vw - 250px);
+}
+
+.buttondownload{
+  color: rgba(255, 255, 255, 0.678);
+  background: #1C1D26;
+  border: 2px solid #353948;
+  padding: 10px 10px;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #353948;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
+}
+
+.buttondownload:hover {
+  box-shadow: inset 110px 0 0 0 #353948;
+  -webkit-transition: ease-out 0.3s;
+  -moz-transition: ease-out 0.3s;
+  transition: ease-out 0.3s;
+}
+
+.buttondownload img{
+  width: 12px;
+}
+
+.delete{
+  margin-top: -39.5px;
+  margin-left: calc(80vw - 150px);
 }
 
 .buttondelete{
@@ -648,32 +714,6 @@ input[type="file"] {
 
 .buttondelete img{
   width: 10.5px;
-}
-
-.apply{
-  margin-left: max(calc(80vw - 150px), 55vw);
-}
-
-.buttonapply {
-  margin-top: 10px;
-  color: rgba(255, 255, 255, 0.678);
-  background: #1C1D26;
-  border: 2px solid #353948;
-  padding: 10px 10px;
-  font-size: 13px;
-  letter-spacing: 1.5px;
-  cursor: pointer;
-  box-shadow: inset 0 0 0 0 #353948;
-  -webkit-transition: ease-out 0.3s;
-  -moz-transition: ease-out 0.3s;
-  transition: ease-out 0.3s;
-}
-
-.buttonapply:hover {
-  box-shadow: inset 100px 0 0 0 #353948;
-  -webkit-transition: ease-out 0.3s;
-  -moz-transition: ease-out 0.3s;
-  transition: ease-out 0.3s;
 }
 
 </style>
