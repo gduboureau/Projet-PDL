@@ -95,11 +95,12 @@ async function showImageWithAlgo() {
     }else{
       val.value = "";
     }
-    document!.getElementById("wait")!.hidden = false;
+    document.getElementById("wait")!.setAttribute("style","z-index:4");
     await applyAlgo(CurrentId.value, selectAlgo.value, val.value);
-    document!.getElementById("wait")!.hidden = true;
     document.getElementById("createImage")!.setAttribute("src","images/"+CurrentId.value+"?algorithm="+selectAlgo.value+val.value);
     document.getElementById("Imginlist-"+CurrentId.value)!.setAttribute("src", "/images/" + CurrentId.value + "?algorithm=" + selectAlgo.value + val.value);
+    await new Promise(r => setTimeout(r, 3000));
+    document.getElementById("wait")!.setAttribute("style","z-index:-1");
   }
 }
 
@@ -247,7 +248,6 @@ function setSide(selectSide: string){
 
       <div id="algo" hidden>
         <div id="applyAlgo">
-          <p id="wait" hidden>Transformation de l'image en cours...</p>
           <div id="chooseAlgo" v-for="algo in algoList" :key="algo.name">
             <div class="c">
               <input type="checkbox" class="algorithmsname" :id="`algorithmsname`+algo.name" v-on:click="selectedAlgo(algo.name)">
@@ -291,6 +291,11 @@ function setSide(selectSide: string){
         <input type="file" id="file" ref="file" @change="handleFileUpload"/>
         Add Image
       </label>
+    </nav>
+
+    <nav class="waitingscreen" id="wait">
+      <div class="messagewaitscreen">Image Processing</div>
+      <div class="loader"></div>
     </nav>
 
     <nav class="Imgdisplayer">
@@ -518,6 +523,62 @@ input[type="file"] {
 .buttonupload:hover {
   box-shadow: inset 0 -100px 0 0 #1C1D26;
 }
+
+.waitingscreen {
+ position: fixed;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ top: 0;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ background-color: rgba(255, 255, 255, 0.33);
+ z-index: -1;
+}
+
+.messagewaitscreen{
+  margin-top: min(-12vh,-30px);
+  font-size: min(2vw,25px);
+}
+
+.loader {
+	position: absolute;
+	display: flex;
+	
+}
+
+.loader::before,
+.loader::after {
+	content: '';
+	box-sizing: border-box;
+}
+
+.loader::before {
+	height: 2px;
+	width: 30vw;
+	background-color: black;
+	animation: loader 1.5s cubic-bezier(0, 0, 0.5, 0.7) infinite;
+}
+
+@keyframes loader {
+	0%, 44%, 88.1%, 100% {
+		transform-origin: left;
+	}
+	
+	0%, 100%, 88% {
+		transform: scaleX(0);
+	}
+	
+	44.1%, 88% {
+		transform-origin: right;
+	}
+	
+	33%, 44% {
+		transform: scaleX(1);
+	}
+}
+
 
 .Imgdisplayer{
   position:absolute;
