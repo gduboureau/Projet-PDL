@@ -76,6 +76,7 @@ async function applyAlgo(prop: number,name: String,parameter: String): Promise<B
 }
 
 async function deleteImage(): Promise<void> {
+  CurrentId.value = -1; 
   document.getElementById("createImage")!.hidden = true;
   document.getElementById("Displayerinfo")!.hidden = false;
   document.getElementById("buttondelete")!.hidden = true;
@@ -88,6 +89,9 @@ async function deleteImage(): Promise<void> {
 async function showImageWithAlgo() {
   if (CurrentId.value == -1){
     alert("Please choose an Image");
+  }
+  if (selectAlgo.value == ""){
+    alert("Please choose an Algorithm");
   }
   if (selectAlgo.value != "" && CurrentId.value != -1){
     const val = ref("");
