@@ -446,17 +446,21 @@ h1{
 }
 
 .radio-toolbar label {
+  margin-top: 5px;
+  letter-spacing: 1px;
+  font-size: min(1.9vw,12px);
   display: inline-block;
-  background-color: #6e6e6e;
-  padding: 5px 10px;
-  border: 2px solid #444;
+  background-color: #353948;
+  padding: 5px 7px;
+  border: 2px solid #353948;
   border-radius: 8px;
   cursor: pointer;
-  color: rgb(255, 255, 255);;
+  color: rgba(255, 255, 255, 0.564);
 }
 
 .radio-toolbar input[type="radio"]:checked + label {
-  background-color:rgba(69, 67, 68, 0.525);
+  background-color:#1c1d268f;
+  color: rgb(255, 255, 255);
 }
 
 
