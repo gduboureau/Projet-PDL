@@ -94,9 +94,7 @@ function Slide(index: number) {
 <style scoped>
 
 .large-img img {
-  max-height: calc(75vh - 50px);
-  min-height: 20px;
-  max-width: 65vw;
+  height: 75vh;
 }
 
 .gallery-display {
