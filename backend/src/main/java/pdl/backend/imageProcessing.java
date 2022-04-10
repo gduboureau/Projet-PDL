@@ -43,7 +43,7 @@ public class imageProcessing {
    * @param image : the image
    */
   public static void HistogramEqualization(Planar<GrayU8> image) {
-    boolean isInColor = (image.getNumBands() == 3);
+    boolean isInColor = (image.getNumBands() >= 3);
     int hist[] = new int[256], HistogramCumulative[] = new int[256];
     int lut[] = new int[256];
     for (int y = 0; y < image.height; ++y) {
@@ -248,7 +248,7 @@ public class imageProcessing {
     Planar<GrayU8> image,
     Planar<GrayU8> output
   ) {
-    if (image.imageType.numBands == 3) {
+    if (image.imageType.numBands >= 3) {
       ColorToGray(image, output);
     }
     int h1[][] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
@@ -439,7 +439,7 @@ public class imageProcessing {
    */
 
   public static void Negative(Planar<GrayU8> image) {
-    boolean isInColor = (image.getNumBands() == 3);
+    boolean isInColor = (image.getNumBands() >= 3);
     for (int y = 0; y < image.height; ++y) {
       for (int x = 0; x < image.width; ++x) {
         if (isInColor) {
@@ -720,7 +720,7 @@ public class imageProcessing {
   }
 
   public static void KeepColor(Planar<GrayU8> image, String color){
-    if (color == "red"){
+    if (color.equals("red")){
       KeepRed(image);
     }else if (color.equals("blue")){
       KeepBlue(image);

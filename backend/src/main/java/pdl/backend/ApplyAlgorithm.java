@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 
 import boofcv.struct.border.BorderType;
 import boofcv.struct.image.GrayU8;
@@ -19,7 +20,7 @@ import boofcv.struct.image.Planar;
 
 public class ApplyAlgorithm {
     static ObjectMapper mapper = new ObjectMapper();
-    public static ResponseEntity<?> ChooseAlgorithm(Optional<Image> img, String algo, String p1) throws NumberFormatException, IOException{
+    public static ResponseEntity<?> ChooseAlgorithm(Optional<Image> img, String algo, String p1,MediaType type) throws NumberFormatException, IOException{
         
         if (checkAlgoParameters(algo, p1) != null){
             return checkAlgoParameters(algo, p1);
@@ -65,7 +66,7 @@ public class ApplyAlgorithm {
         }
         
         InputStream inputStream = new ByteArrayInputStream(img.get().getData());
-        return ResponseEntity.ok().contentType(org.springframework.http.MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+        return ResponseEntity.ok().contentType(type).body(new InputStreamResource(inputStream));
     }
 
     public static ResponseEntity<?> checkAlgoParameters(String algo, String p1){

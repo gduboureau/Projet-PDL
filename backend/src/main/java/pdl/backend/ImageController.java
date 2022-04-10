@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import javax.print.attribute.standard.Media;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -39,20 +41,26 @@ public class ImageController {
     this.imageDao = imageDao;
   }
 
-  @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+  @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = {MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
   public ResponseEntity<?> getImage(@PathVariable("id") long id,@RequestParam HashMap<String,String> map) throws IOException {
 
     Optional<Image> image = imageDao.retrieve(id);
 
     if (image.isPresent()) {
+      MediaType type = null;
+      if (image.get().getType().toString().equals("image/jpeg")){
+        type = MediaType.IMAGE_JPEG;
+      }else if (image.get().getType().toString().equals("image/png")){
+        type = MediaType.IMAGE_PNG;
+      }
       if (map.isEmpty()){
         InputStream inputStream = new ByteArrayInputStream(image.get().getData());
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+        return ResponseEntity.ok().contentType(type).body(new InputStreamResource(inputStream));
       }else{
         String AlgoName = map.get("algorithm");
         String param1 = Optional.ofNullable(map.get("p1")).orElse(null);
         try{
-          return ApplyAlgorithm.ChooseAlgorithm(image, AlgoName, param1);
+          return ApplyAlgorithm.ChooseAlgorithm(image, AlgoName, param1,type);
         }catch (Exception e) {
           return new ResponseEntity<>("Algorithm execution failed for an internal reason", HttpStatus.INTERNAL_SERVER_ERROR);
         }
