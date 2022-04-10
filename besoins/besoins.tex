@@ -386,5 +386,106 @@ Les actions que peut effectuer l'utilisateur côté client induisent des requêt
 {}
 {}
 
+\subsection{Besoins additionnels}
+
+\besoin{bnf:negative}
+{Filtre négatif}
+{
+  L'utilisateur peut appliquer un filtre négatif à l'image sélectionnée. 
+  Une image négative est une image dont les couleurs ont été inversées par rapport à l'originale.
+}
+{}
+{}
+
+\besoin{bnf:sideGray}
+{Filtre SideGray}
+{
+  L'utilisateur peut appliquer un filtre "sideGray" à l'image sélectionnée. 
+  Ce filtre permet de griser la moitié de l'image selectionnée par l'utilisateur (gauche ou droite selon le paramètre choisi) tandis que l'autre moitié
+  reste en couleur.
+}
+{}
+{}
+
+\besoin{bnf:keepColor}
+{Filtre KeepColor}
+{
+  L'utilisateur peut appliquer un filtre "KeepColor" à l'image sélectionnée. 
+  Ce filtre permet de garder uniquement les pixels voulus de l'image tandis que le reste de l'image sera grisée.
+  Voici les différentes couleurs qui peuvent être selectionnée pour être gardé sur l'image:
+  \begin{itemize}
+  \item Vert
+  \item Bleu
+  \item Rouge
+  \item Jaune
+  \item Violet
+  \item Orange
+  \item les couleurs chaudes (rouge, orange, jaune)
+  \item les couleurs froides (vert, bleu, violet)
+  \end{itemize}
+}
+{}
+{}
+
+\besoin{bnf:Solarize}
+{Filtre Solarize}
+{
+  L'utilisateur peut appliquer un filtre "Solarize" à l'image sélectionnée. 
+  Ce filtre permet d'inverser la tonalité de l'image.
+}
+{}
+{}
+
+\besoin{bnf:interfaceUtilisateur}
+{Amélioration de l’interface utilisateur}
+{
+  L'interface utilisateur a été complétement modifié pour être plus pratique d'utilisation et plus ergonomique.
+  Nous pouvons nous déplacer de la galerie vers le menu Home et vice-versa (le menu Home est défini par défaut).
+  Les différentes modifcations effectuées sont explicitées dans les besoins ci-dessous.
+}
+{}
+{}
+
+\besoin{bnf:panelLeft}
+{Panneau de gauche}
+{
+  Le panneau de gauche permet de selectionner les différentes images ainsi que les différents algorithmes :
+  \begin{itemize}
+  \item Sur le panneau des images (affiché par défaut), toutes les images sont affichées (format réduit) pour être pré-visualisées avant
+  de cliquer dessus pour les afficher en plus grande. En dessous des images, nous pouvons choisir d'importer nos propres images via un bouton
+  upload. L'importation d'une image se fait directement et la modification est appliquée en temps réel.
+  \item Sur le panneau des algorithmes, tous les noms des algorithmes sont affichés. Nous pouvons cliquer dessus ce qui a pour effet de selectionner
+  l'algorithme voulu. Les algorithmes nécessitant des paramètres "entier" se déroule pour afficher une barre "slide" pour selectionné la valeur.
+  Pour les autres, ce sont des cases à sélectionner.
+  Nous ne pouvons appliquer l'algorithme que si l'image est selectionnée et si on se trouve dans le menu des algorithmes.
+  \end{itemize}
+  }
+{}
+{}
+
+\besoin{bnf:panelright}
+{Panneau de droite}
+{
+  Le panneau de droite permet d'afficher l'image lorsqu'elle a été selectionnée dans le menu des images de gauche.
+}
+{}
+{}
+
+\besoin{bnf:panelBottom}
+{Panneau du bas de la page}
+{
+  Le panneau du bas de la page permet de supprimer l'image choisie, de la télécharger ou d'appliquer un algorithme.
+  La suppression d'une image se fait directement et la modification est appliquée en temps réel.
+}
+{}
+{}
+
+\besoin{bnf:loading}
+{Chargement d'un algorithme}
+{
+  Lors de l'application d'un algorithme sur une image, un écran de chargement apparait sur la page.
+}
+{}
+{}
 
 \end{document}
