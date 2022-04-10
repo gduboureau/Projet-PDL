@@ -76,13 +76,13 @@ async function applyAlgo(prop: number,name: String,parameter: String): Promise<B
 }
 
 async function deleteImage(): Promise<void> {
-  CurrentId.value = -1; 
   document.getElementById("createImage")!.hidden = true;
   document.getElementById("Displayerinfo")!.hidden = false;
   document.getElementById("buttondelete")!.hidden = true;
   document.getElementById("buttondownload")!.hidden = true;
   await api.deleteImage(CurrentId.value);
   getImageList()
+  CurrentId.value = -1; 
 }
 
 
