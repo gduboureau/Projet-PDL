@@ -203,14 +203,17 @@ function selectedAlgo(name: string){
     document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
   }else if(name == "MeanFilter"){
     slider.setAttribute("min","1");
-    slider.setAttribute("max","20");
+    slider.setAttribute("max","9");
     slider.defaultValue = "1";
     document.getElementById('rangeValue'+name)!.innerHTML = "0";
-    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
+    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px");
+    slider.step = "2";
   }else if (name == "Brightness"){
     slider.defaultValue = "0";
     document.getElementById('rangeValue'+name)!.innerHTML = "0";
-    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px")
+    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px");
+  }else if (name == "SideGray" || name == "KeepColor"){
+    document.getElementById("showParam"+name)!.setAttribute("style","max-height:300px");
   }
 }
 
